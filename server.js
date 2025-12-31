@@ -174,68 +174,145 @@ app.set('io', io);
 
 // ==================== BASIC ROUTES ====================
 
-// Home page
+// Home page with error handling
 app.get('/', (req, res) => {
-  res.render('pages/home', {
-    title: 'Source Code Hub - Futuristic Code Sharing Platform'
-  });
+  try {
+    res.render('pages/home', {
+      title: 'Source Code Hub - Futuristic Code Sharing Platform',
+      body: '' // Add body variable
+    });
+  } catch (error) {
+    console.error('Home page error:', error);
+    res.status(500).render('pages/500', {
+      title: '500 - Server Error',
+      error: error,
+      env: process.env.NODE_ENV || 'production',
+      body: ''
+    });
+  }
 });
 
 // Project detail page
 app.get('/project/:id', (req, res) => {
-  res.render('pages/project-detail', { 
-    title: 'Project Details',
-    projectId: req.params.id
-  });
+  try {
+    res.render('pages/project-detail', { 
+      title: 'Project Details',
+      projectId: req.params.id,
+      body: ''
+    });
+  } catch (error) {
+    console.error('Project detail error:', error);
+    res.status(500).render('pages/500', {
+      title: '500 - Server Error',
+      error: error,
+      env: process.env.NODE_ENV || 'production',
+      body: ''
+    });
+  }
 });
 
 // Legends page
 app.get('/legends', (req, res) => {
-  res.render('pages/legends', {
-    title: 'Legends - Source Code Hub'
-  });
+  try {
+    res.render('pages/legends', {
+      title: 'Legends - Source Code Hub',
+      body: ''
+    });
+  } catch (error) {
+    console.error('Legends page error:', error);
+    res.status(500).render('pages/500', {
+      title: '500 - Server Error',
+      error: error,
+      env: process.env.NODE_ENV || 'production',
+      body: ''
+    });
+  }
 });
 
 // ==================== ADMIN PAGES ====================
 
 // Admin login page
 app.get('/admin/login', (req, res) => {
-  if (req.session.isAuthenticated) {
-    return res.redirect('/admin/dashboard');
+  try {
+    if (req.session.isAuthenticated) {
+      return res.redirect('/admin/dashboard');
+    }
+    res.render('pages/admin/login', {
+      title: 'Admin Login - Source Code Hub',
+      body: ''
+    });
+  } catch (error) {
+    console.error('Admin login page error:', error);
+    res.status(500).render('pages/500', {
+      title: '500 - Server Error',
+      error: error,
+      env: process.env.NODE_ENV || 'production',
+      body: ''
+    });
   }
-  res.render('pages/admin/login', {
-    title: 'Admin Login - Source Code Hub'
-  });
 });
 
 // Admin dashboard
 app.get('/admin/dashboard', (req, res) => {
-  if (!req.session.isAuthenticated) {
-    return res.redirect('/admin/login');
+  try {
+    if (!req.session.isAuthenticated) {
+      return res.redirect('/admin/login');
+    }
+    res.render('pages/admin/dashboard', {
+      title: 'Admin Dashboard - Source Code Hub',
+      body: ''
+    });
+  } catch (error) {
+    console.error('Admin dashboard error:', error);
+    res.status(500).render('pages/500', {
+      title: '500 - Server Error',
+      error: error,
+      env: process.env.NODE_ENV || 'production',
+      body: ''
+    });
   }
-  res.render('pages/admin/dashboard', {
-    title: 'Admin Dashboard - Source Code Hub'
-  });
 });
 
 // Upload project page
 app.get('/admin/projects/upload', (req, res) => {
-  if (!req.session.isAuthenticated) {
-    return res.redirect('/admin/login');
+  try {
+    if (!req.session.isAuthenticated) {
+      return res.redirect('/admin/login');
+    }
+    res.render('pages/admin/project-upload', {
+      title: 'Upload Project - Admin Dashboard',
+      body: ''
+    });
+  } catch (error) {
+    console.error('Project upload page error:', error);
+    res.status(500).render('pages/500', {
+      title: '500 - Server Error',
+      error: error,
+      env: process.env.NODE_ENV || 'production',
+      body: ''
+    });
   }
-  res.render('pages/admin/project-upload', {
-    title: 'Upload Project - Admin Dashboard'
-  });
 });
 
 // Edit profile page
 app.get('/admin/profile', (req, res) => {
-  if (!req.session.isAuthenticated) {
-    return res.redirect('/admin/login');
+  try {
+    if (!req.session.isAuthenticated) {
+      return res.redirect('/admin/login');
+    }
+    res.render('pages/admin/profile', {
+      title: 'Edit Profile - Admin Dashboard',
+      body: ''
+    });
+  } catch (error) {
+    console.error('Profile page error:', error);
+    res.status(500).render('pages/500', {
+      title: '500 - Server Error',
+      error: error,
+      env: process.env.NODE_ENV || 'production',
+      body: ''
+    });
   }
-  res.render('pages/admin/profile', {
-    title: 'Edit Profile - Admin Dashboard'
-  });
 });
 
 // ==================== API ROUTES ====================
@@ -322,26 +399,44 @@ app.get('/sitemap.xml', (req, res) => {
 
 // ==================== ERROR HANDLING ====================
 
-// 404 - Page Not Found
+// 404 - Page Not Found with proper error handling
 app.use((req, res, next) => {
-  res.status(404).render('pages/404', {
-    title: '404 - Page Not Found'
-  });
+  try {
+    res.status(404).render('pages/404', {
+      title: '404 - Page Not Found',
+      body: ''
+    });
+  } catch (error) {
+    console.error('404 handler error:', error);
+    res.status(404).send('Page not found');
+  }
 });
 
-// 500 - Server Error
+// 500 - Server Error with improved error handling
 app.use((err, req, res, next) => {
   console.error('🔥 Server Error:', err.message);
   console.error('📋 Error stack:', err.stack);
   
-  // Template data dengan semua required variables
-  const templateData = { 
-    title: '500 - Server Error',
-    error: process.env.NODE_ENV === 'development' ? err : null,
-    env: process.env.NODE_ENV || 'production'
-  };
-  
-  res.status(500).render('pages/500', templateData);
+  try {
+    // Template data dengan semua required variables
+    const templateData = { 
+      title: '500 - Server Error',
+      error: process.env.NODE_ENV === 'development' ? err : null,
+      env: process.env.NODE_ENV || 'production',
+      body: '',
+      currentPath: req.path || '/',
+      isAuthenticated: req.session?.isAuthenticated || false,
+      admin: req.session?.admin || null,
+      csrfToken: req.session?.csrfToken || '',
+      messages: null
+    };
+    
+    res.status(500).render('pages/500', templateData);
+  } catch (renderError) {
+    console.error('Error rendering 500 page:', renderError);
+    // Fallback to plain text if rendering fails
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 // ==================== PROCESS HANDLING ====================
@@ -390,6 +485,9 @@ if (require.main === module) {
     console.log('  GET  /legends             - Legends page');
     console.log('  GET  /project/:id         - Project detail');
     console.log('  GET  /admin/login         - Admin login');
+    console.log('  GET  /admin/dashboard     - Admin dashboard');
+    console.log('  GET  /admin/projects/upload - Upload project');
+    console.log('  GET  /admin/profile       - Edit profile');
     console.log('  GET  /api/health          - Health check');
     console.log('  GET  /api/db-status       - Database status');
   });
