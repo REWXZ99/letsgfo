@@ -1,0 +1,138 @@
+<header class="cyberpunk-header">
+    <!-- Top Navigation Bar -->
+    <nav class="cyberpunk-nav">
+        <div class="nav-container">
+            <!-- Logo & Brand -->
+            <div class="nav-brand">
+                <a href="/" class="logo-link">
+                    <span class="logo-brackets">&lt;/&gt;</span>
+                    <span class="logo-text">Source Code</span>
+                    <span class="logo-glow"></span>
+                </a>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="nav-search">
+                <form action="/api/projects/search" method="GET" class="search-form" id="searchForm">
+                    <div class="search-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input 
+                            type="text" 
+                            name="q" 
+                            id="searchInput"
+                            class="search-input" 
+                            placeholder="Search projects by name or language..."
+                            autocomplete="off"
+                            aria-label="Search projects"
+                        >
+                        <div class="search-dropdown" id="searchDropdown">
+                            <!-- Real-time search results will appear here -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="/" class="nav-link <%= currentPath === '/' ? 'active' : '' %>">
+                    <i class="fas fa-home"></i>
+                    <span class="link-text">Home</span>
+                </a>
+                
+                <a href="/legends" class="nav-link <%= currentPath === '/legends' ? 'active' : '' %>">
+                    <i class="fas fa-crown"></i>
+                    <span class="link-text">Legends</span>
+                </a>
+                
+                <% if (isAuthenticated) { %>
+                    <a href="/admin/dashboard" class="nav-link <%= currentPath.startsWith('/admin') ? 'active' : '' %>">
+                        <i class="fas fa-terminal"></i>
+                        <span class="link-text">Dashboard</span>
+                    </a>
+                    
+                    <div class="nav-user">
+                        <img src="<%= admin.photoUrl || '/images/default-avatar.png' %>" 
+                             alt="<%= admin.name %>" 
+                             class="user-avatar">
+                        <span class="user-name"><%= admin.name.split(' ')[0] %></span>
+                        
+                        <div class="user-dropdown">
+                            <a href="/admin/dashboard" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="/admin/profile" class="dropdown-item">
+                                <i class="fas fa-user-cog"></i>
+                                Profile
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" id="logoutBtn" class="dropdown-item logout">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <a href="/admin/login" class="nav-link cyberpunk-btn btn-sm">
+                        <i class="fas fa-terminal"></i>
+                        <span class="link-text">Admin</span>
+                    </a>
+                <% } %>
+            </div>
+            
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                <span class="menu-line"></span>
+                <span class="menu-line"></span>
+                <span class="menu-line"></span>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-content">
+            <a href="/" class="mobile-link <%= currentPath === '/' ? 'active' : '' %>">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            
+            <a href="/legends" class="mobile-link <%= currentPath === '/legends' ? 'active' : '' %>">
+                <i class="fas fa-crown"></i>
+                <span>Legends</span>
+            </a>
+            
+            <% if (isAuthenticated) { %>
+                <a href="/admin/dashboard" class="mobile-link">
+                    <i class="fas fa-terminal"></i>
+                    <span>Dashboard</span>
+                </a>
+                
+                <a href="/admin/profile" class="mobile-link">
+                    <i class="fas fa-user-cog"></i>
+                    <span>Profile</span>
+                </a>
+                
+                <a href="#" id="mobileLogoutBtn" class="mobile-link logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            <% } else { %>
+                <a href="/admin/login" class="mobile-link">
+                    <i class="fas fa-terminal"></i>
+                    <span>Admin Login</span>
+                </a>
+            <% } %>
+        </div>
+    </div>
+    
+    <!-- Header Glow Effect -->
+    <div class="header-glow"></div>
+</header>
+
+<!-- Logout Form (hidden) -->
+<form id="logoutForm" action="/api/admin/logout" method="POST" style="display: none;">
+    <% if (csrfToken) { %>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <% } %>
+</form>
