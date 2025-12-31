@@ -2,9 +2,9 @@
 <html lang="en" class="cyberpunk-theme">
 <head>
     <%- include('../partials/head', { 
-        title: title,
-        headContent: headContent,
-        csrfToken: csrfToken 
+        title: typeof title !== 'undefined' ? title : 'Source Code Hub',
+        headContent: typeof headContent !== 'undefined' ? headContent : '',
+        csrfToken: typeof csrfToken !== 'undefined' ? csrfToken : ''
     }) %>
 </head>
 <body>
@@ -18,16 +18,16 @@
     <div class="cyberpunk-container">
         <!-- Header -->
         <%- include('../partials/header', {
-            currentPath: currentPath,
-            isAuthenticated: isAuthenticated,
-            admin: admin,
-            csrfToken: csrfToken
+            currentPath: typeof currentPath !== 'undefined' ? currentPath : '/',
+            isAuthenticated: typeof isAuthenticated !== 'undefined' ? isAuthenticated : false,
+            admin: typeof admin !== 'undefined' ? admin : null,
+            csrfToken: typeof csrfToken !== 'undefined' ? csrfToken : ''
         }) %>
         
         <!-- Main Content -->
         <main class="cyberpunk-main">
             <!-- Flash Messages -->
-            <% if (messages && messages.success) { %>
+            <% if (typeof messages !== 'undefined' && messages && messages.success) { %>
                 <div class="alert alert-success">
                     <i class="fas fa-check-circle"></i>
                     <%= messages.success %>
@@ -35,7 +35,7 @@
                 </div>
             <% } %>
             
-            <% if (messages && messages.error) { %>
+            <% if (typeof messages !== 'undefined' && messages && messages.error) { %>
                 <div class="alert alert-error">
                     <i class="fas fa-exclamation-circle"></i>
                     <%= messages.error %>
@@ -43,7 +43,7 @@
                 </div>
             <% } %>
             
-            <% if (messages && messages.info) { %>
+            <% if (typeof messages !== 'undefined' && messages && messages.info) { %>
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle"></i>
                     <%= messages.info %>
@@ -61,12 +61,12 @@
     
     <!-- Bottom Navigation (Mobile) -->
     <nav class="bottom-nav" id="bottomNav">
-        <a href="/" class="bottom-nav-link <%= currentPath === '/' ? 'active' : '' %>">
+        <a href="/" class="bottom-nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/' ? 'active' : '' %>">
             <i class="fas fa-home"></i>
             <span>Home</span>
         </a>
         
-        <a href="/legends" class="bottom-nav-link <%= currentPath === '/legends' ? 'active' : '' %>">
+        <a href="/legends" class="bottom-nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/legends' ? 'active' : '' %>">
             <i class="fas fa-crown"></i>
             <span>Legends</span>
         </a>
@@ -82,7 +82,7 @@
             <span>Chat</span>
         </a>
         
-        <% if (isAuthenticated) { %>
+        <% if (typeof isAuthenticated !== 'undefined' && isAuthenticated) { %>
             <a href="/admin/dashboard" class="bottom-nav-link">
                 <i class="fas fa-terminal"></i>
                 <span>Admin</span>
@@ -124,14 +124,18 @@
     
     <!-- Scripts -->
     <script>
-        // Global variables for EJS data
+        // Global variables for EJS data with fallbacks
         window.appData = {
-            isAuthenticated: <%= isAuthenticated ? 'true' : 'false' %>,
-            admin: <%- JSON.stringify(admin || {}) %>,
-            currentPath: '<%= currentPath %>',
-            csrfToken: '<%= csrfToken || "" %>',
+            isAuthenticated: <%= typeof isAuthenticated !== 'undefined' ? isAuthenticated : 'false' %>,
+            admin: <%- JSON.stringify(typeof admin !== 'undefined' ? admin : {}) %>,
+            currentPath: '<%= typeof currentPath !== 'undefined' ? currentPath : '/' %>',
+            csrfToken: '<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>',
             socketConnected: false
         };
     </script>
+    
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html>
