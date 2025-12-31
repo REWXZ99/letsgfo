@@ -1,0 +1,49 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'Source Code Hub' %> | Futuristic Code Sharing Platform</title>
+    
+    <!-- Cyberpunk Minimalist Meta -->
+    <meta name="description" content="Premium source code sharing platform with cyberpunk-minimalist design. Share and discover amazing projects for free.">
+    <meta name="keywords" content="source code, programming, projects, cyberpunk, minimal, free, open source">
+    <meta name="author" content="Source Code Hub">
+    <meta name="theme-color" content="#000000">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="alternate icon" type="image/png" href="/images/favicon.png">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Source Code Hub">
+    <meta property="og:description" content="Premium source code sharing platform with cyberpunk-minimalist design">
+    <meta property="og:image" content="/images/og-image.png">
+    <meta property="og:url" content="https://sourcecodehub.com">
+    <meta property="og:type" content="website">
+    
+    <!-- CSRF Token for Forms -->
+    <% if (csrfToken) { %>
+    <meta name="csrf-token" content="<%= csrfToken %>">
+    <% } %>
+    
+    <!-- Socket.IO for Real-time -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <!-- Scripts -->
+    <script src="/js/main.js" defer></script>
+    
+    <!-- Page-specific head content -->
+    <% if (headContent) { %>
+        <%= headContent %>
+    <% } %>
+</head>
