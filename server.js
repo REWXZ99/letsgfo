@@ -34,7 +34,7 @@ mongoose.connect(MONGODB_URI, {
 
 // Middleware Security
 app.use(helmet({
-  contentSecurityPolicy: false, // Nonaktifkan untuk development
+  contentSecurityPolicy: false,
   crossOriginEmbedderPolicy: false
 }));
 
@@ -158,25 +158,30 @@ app.get('/admin/profile', (req, res) => {
 const apiRoutes = require('./routes/api');
 app.use('/api', apiRoutes);
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 // Error handling
 app.use((req, res, next) => {
   res.status(404).render('pages/404');
 });
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('Server Error:', err);
   res.status(500).render('pages/500', { 
     error: process.env.NODE_ENV === 'development' ? err : null,
     env: process.env.NODE_ENV
   });
 });
 
-// Export untuk Vercel (WAJIB untuk deployment)
-module.exports = (req, res) => {
-  // Attach io to request
-  req.io = io;
-  return app(req, res);
-};
+// Export untuk Vercel
+module.exports = app;
 
 // Start server untuk development
 if (require.main === module) {
