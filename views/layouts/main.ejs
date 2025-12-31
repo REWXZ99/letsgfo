@@ -27,32 +27,34 @@
         <!-- Main Content -->
         <main class="cyberpunk-main">
             <!-- Flash Messages -->
-            <% if (typeof messages !== 'undefined' && messages && messages.success) { %>
-                <div class="alert alert-success">
-                    <i class="fas fa-check-circle"></i>
-                    <%= messages.success %>
-                    <button class="alert-close">&times;</button>
-                </div>
-            <% } %>
-            
-            <% if (typeof messages !== 'undefined' && messages && messages.error) { %>
-                <div class="alert alert-error">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <%= messages.error %>
-                    <button class="alert-close">&times;</button>
-                </div>
-            <% } %>
-            
-            <% if (typeof messages !== 'undefined' && messages && messages.info) { %>
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i>
-                    <%= messages.info %>
-                    <button class="alert-close">&times;</button>
-                </div>
+            <% if (typeof messages !== 'undefined' && messages) { %>
+                <% if (messages.success) { %>
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <%= messages.success %>
+                        <button class="alert-close">&times;</button>
+                    </div>
+                <% } %>
+                
+                <% if (messages.error) { %>
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <%= messages.error %>
+                        <button class="alert-close">&times;</button>
+                    </div>
+                <% } %>
+                
+                <% if (messages.info) { %>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <%= messages.info %>
+                        <button class="alert-close">&times;</button>
+                    </div>
+                <% } %>
             <% } %>
             
             <!-- Page Content -->
-            <%- body %>
+            <%- typeof body !== 'undefined' ? body : '' %>
         </main>
         
         <!-- Footer -->
@@ -126,8 +128,8 @@
     <script>
         // Global variables for EJS data with fallbacks
         window.appData = {
-            isAuthenticated: <%= typeof isAuthenticated !== 'undefined' ? isAuthenticated : 'false' %>,
-            admin: <%- JSON.stringify(typeof admin !== 'undefined' ? admin : {}) %>,
+            isAuthenticated: <%= typeof isAuthenticated !== 'undefined' ? JSON.stringify(isAuthenticated) : 'false' %>,
+            admin: <%- JSON.stringify(typeof admin !== 'undefined' && admin ? admin : {}) %>,
             currentPath: '<%= typeof currentPath !== 'undefined' ? currentPath : '/' %>',
             csrfToken: '<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>',
             socketConnected: false
