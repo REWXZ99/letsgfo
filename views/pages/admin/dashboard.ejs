@@ -1,0 +1,959 @@
+<%- include('../../layouts/main', { 
+    title: 'Admin Dashboard - Source Code Hub',
+    headContent: `
+        <style>
+            .dashboard-section {
+                padding: 2rem 1rem;
+            }
+            
+            .dashboard-container {
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+            
+            .dashboard-header {
+                margin-bottom: 2rem;
+            }
+            
+            .dashboard-title {
+                font-size: 2rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                color: white;
+            }
+            
+            .dashboard-subtitle {
+                color: var(--zinc-500);
+                font-size: 1rem;
+            }
+            
+            .dashboard-welcome {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                margin-bottom: 2rem;
+                padding: 1.5rem;
+                background: rgba(255, 0, 0, 0.05);
+                border: 1px solid rgba(255, 0, 0, 0.1);
+                border-radius: var(--radius-xl);
+            }
+            
+            .welcome-avatar {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid var(--red);
+            }
+            
+            .welcome-content h3 {
+                font-size: 1.25rem;
+                font-weight: 600;
+                margin-bottom: 0.25rem;
+            }
+            
+            .welcome-content p {
+                color: var(--zinc-500);
+                font-size: 0.9rem;
+            }
+            
+            .welcome-role {
+                display: inline-block;
+                padding: 0.25rem 0.75rem;
+                background: rgba(255, 0, 0, 0.1);
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                border-radius: 1rem;
+                font-size: 0.85rem;
+                color: var(--red);
+                margin-top: 0.5rem;
+            }
+            
+            .dashboard-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 3rem;
+            }
+            
+            .stat-card {
+                background: rgba(10, 10, 10, 0.8);
+                border: 1px solid rgba(255, 0, 0, 0.1);
+                border-radius: var(--radius-xl);
+                padding: 1.5rem;
+                transition: all 0.3s ease;
+            }
+            
+            .stat-card:hover {
+                border-color: rgba(255, 0, 0, 0.3);
+                transform: translateY(-2px);
+            }
+            
+            .stat-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+            }
+            
+            .stat-icon {
+                width: 48px;
+                height: 48px;
+                border-radius: var(--radius-lg);
+                background: rgba(255, 0, 0, 0.1);
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--red);
+                font-size: 1.25rem;
+            }
+            
+            .stat-trend {
+                font-size: 0.85rem;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 0.25rem;
+            }
+            
+            .trend-up {
+                color: #10b981;
+            }
+            
+            .trend-down {
+                color: #ef4444;
+            }
+            
+            .stat-title {
+                font-size: 0.9rem;
+                color: var(--zinc-500);
+                margin-bottom: 0.5rem;
+            }
+            
+            .stat-value {
+                font-size: 1.75rem;
+                font-weight: 700;
+                color: white;
+                font-family: var(--font-code);
+            }
+            
+            .dashboard-actions {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1rem;
+                margin-bottom: 3rem;
+            }
+            
+            .action-card {
+                background: rgba(10, 10, 10, 0.8);
+                border: 1px solid rgba(255, 0, 0, 0.1);
+                border-radius: var(--radius-xl);
+                padding: 1.5rem;
+                text-align: center;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                text-decoration: none;
+                color: inherit;
+                display: block;
+            }
+            
+            .action-card:hover {
+                border-color: rgba(255, 0, 0, 0.3);
+                transform: translateY(-2px);
+                background: rgba(255, 0, 0, 0.05);
+            }
+            
+            .action-icon {
+                width: 64px;
+                height: 64px;
+                border-radius: var(--radius-lg);
+                background: rgba(255, 0, 0, 0.1);
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1rem;
+                color: var(--red);
+                font-size: 1.5rem;
+            }
+            
+            .action-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+                color: white;
+            }
+            
+            .action-description {
+                color: var(--zinc-500);
+                font-size: 0.9rem;
+                line-height: 1.4;
+            }
+            
+            .recent-projects-section {
+                margin-bottom: 3rem;
+            }
+            
+            .section-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: white;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            
+            .section-title i {
+                color: var(--red);
+            }
+            
+            .projects-table {
+                width: 100%;
+                background: rgba(10, 10, 10, 0.8);
+                border: 1px solid rgba(255, 0, 0, 0.1);
+                border-radius: var(--radius-xl);
+                overflow: hidden;
+            }
+            
+            .table-header {
+                display: grid;
+                grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+                gap: 1rem;
+                padding: 1rem 1.5rem;
+                background: rgba(255, 0, 0, 0.05);
+                border-bottom: 1px solid rgba(255, 0, 0, 0.1);
+                font-weight: 600;
+                color: var(--zinc-400);
+                font-size: 0.9rem;
+            }
+            
+            .table-row {
+                display: grid;
+                grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+                gap: 1rem;
+                padding: 1rem 1.5rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                transition: background 0.3s ease;
+            }
+            
+            .table-row:hover {
+                background: rgba(255, 255, 255, 0.02);
+            }
+            
+            .table-row:last-child {
+                border-bottom: none;
+            }
+            
+            .project-name {
+                color: white;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            
+            .project-language {
+                display: inline-block;
+                padding: 0.25rem 0.75rem;
+                background: rgba(255, 0, 0, 0.1);
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                border-radius: 1rem;
+                font-size: 0.85rem;
+                font-family: var(--font-code);
+                color: var(--red);
+            }
+            
+            .project-stats {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: var(--zinc-500);
+                font-size: 0.9rem;
+            }
+            
+            .project-actions {
+                display: flex;
+                gap: 0.5rem;
+            }
+            
+            .table-btn {
+                width: 32px;
+                height: 32px;
+                border-radius: var(--radius-md);
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: var(--zinc-500);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-decoration: none;
+            }
+            
+            .table-btn:hover {
+                background: rgba(255, 0, 0, 0.1);
+                border-color: rgba(255, 0, 0, 0.2);
+                color: var(--red);
+            }
+            
+            .empty-table {
+                padding: 3rem;
+                text-align: center;
+                color: var(--zinc-500);
+            }
+            
+            .empty-table i {
+                font-size: 2rem;
+                margin-bottom: 1rem;
+                color: var(--red);
+                opacity: 0.5;
+            }
+            
+            .chats-section {
+                margin-bottom: 3rem;
+            }
+            
+            .chats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+                gap: 1.5rem;
+            }
+            
+            .chat-card {
+                background: rgba(10, 10, 10, 0.8);
+                border: 1px solid rgba(255, 0, 0, 0.1);
+                border-radius: var(--radius-xl);
+                padding: 1.5rem;
+                transition: all 0.3s ease;
+            }
+            
+            .chat-card:hover {
+                border-color: rgba(255, 0, 0, 0.3);
+                transform: translateY(-2px);
+            }
+            
+            .chat-header {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .chat-user {
+                font-weight: 600;
+                color: white;
+            }
+            
+            .chat-time {
+                font-size: 0.85rem;
+                color: var(--zinc-500);
+            }
+            
+            .chat-preview {
+                color: var(--zinc-400);
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+                line-height: 1.4;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            
+            .chat-status {
+                display: inline-block;
+                padding: 0.25rem 0.75rem;
+                border-radius: 1rem;
+                font-size: 0.85rem;
+                font-weight: 500;
+            }
+            
+            .status-open {
+                background: rgba(34, 197, 94, 0.1);
+                border: 1px solid rgba(34, 197, 94, 0.2);
+                color: #22c55e;
+            }
+            
+            .status-closed {
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: var(--zinc-500);
+            }
+            
+            .dashboard-footer {
+                padding-top: 2rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                text-align: center;
+                color: var(--zinc-500);
+                font-size: 0.9rem;
+            }
+            
+            @media (max-width: 768px) {
+                .table-header,
+                .table-row {
+                    grid-template-columns: 1fr;
+                    gap: 0.5rem;
+                }
+                
+                .table-header {
+                    display: none;
+                }
+                
+                .table-cell {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                
+                .table-cell::before {
+                    content: attr(data-label);
+                    font-weight: 600;
+                    color: var(--zinc-500);
+                    margin-right: 1rem;
+                }
+                
+                .project-actions {
+                    justify-content: flex-end;
+                }
+                
+                .chats-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+            
+            @media (max-width: 480px) {
+                .dashboard-grid {
+                    grid-template-columns: 1fr;
+                }
+                
+                .dashboard-actions {
+                    grid-template-columns: 1fr;
+                }
+                
+                .welcome-content h3 {
+                    font-size: 1.1rem;
+                }
+            }
+        </style>
+    `
+}) %>
+
+<div class="dashboard-section">
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Admin Dashboard</h1>
+            <p class="dashboard-subtitle">Manage your projects and platform</p>
+        </div>
+        
+        <!-- Welcome Card -->
+        <div class="dashboard-welcome">
+            <img src="<%= admin.photoUrl || '/images/default-avatar.png' %>" 
+                 alt="<%= admin.name %>"
+                 class="welcome-avatar">
+            <div class="welcome-content">
+                <h3>Welcome back, <%= admin.name %>!</h3>
+                <p>You have full control over the platform.</p>
+                <span class="welcome-role"><%= admin.role %></span>
+            </div>
+        </div>
+        
+        <!-- Stats Grid -->
+        <div class="dashboard-grid" id="statsGrid">
+            <!-- Stats will be loaded via JavaScript -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <span class="stat-trend trend-up" id="projectsTrend">+0%</span>
+                </div>
+                <div class="stat-title">Total Projects</div>
+                <div class="stat-value" id="totalProjects">0</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <span class="stat-trend trend-up" id="likesTrend">+0%</span>
+                </div>
+                <div class="stat-title">Total Likes</div>
+                <div class="stat-value" id="totalLikes">0</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <span class="stat-trend trend-up" id="downloadsTrend">+0%</span>
+                </div>
+                <div class="stat-title">Total Downloads</div>
+                <div class="stat-value" id="totalDownloads">0</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <span class="stat-trend trend-up" id="chatsTrend">+0%</span>
+                </div>
+                <div class="stat-title">Active Chats</div>
+                <div class="stat-value" id="activeChats">0</div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="dashboard-actions">
+            <a href="/admin/projects/upload" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-upload"></i>
+                </div>
+                <h4 class="action-title">Upload New Project</h4>
+                <p class="action-description">
+                    Share your code or files with the community. Support CODE or FILE type uploads.
+                </p>
+            </a>
+            
+            <a href="/admin/projects" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-list"></i>
+                </div>
+                <h4 class="action-title">Manage Projects</h4>
+                <p class="action-description">
+                    View, edit, or delete your existing projects. Track performance and engagement.
+                </p>
+            </a>
+            
+            <a href="/admin/profile" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <h4 class="action-title">Edit Profile</h4>
+                <p class="action-description">
+                    Update your profile information, photo, quote, hashtags, and password.
+                </p>
+            </a>
+            
+            <a href="/admin/chats" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h4 class="action-title">View Chats</h4>
+                <p class="action-description">
+                    Manage conversations with users. Respond to questions and provide support.
+                </p>
+            </a>
+        </div>
+        
+        <!-- Recent Projects -->
+        <div class="recent-projects-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-history"></i>
+                    Recent Projects
+                </h2>
+                <a href="/admin/projects" class="cyberpunk-btn btn-sm">
+                    <i class="fas fa-eye"></i>
+                    <span>View All</span>
+                </a>
+            </div>
+            
+            <div class="projects-table" id="projectsTable">
+                <!-- Projects will be loaded via JavaScript -->
+                <div class="empty-table">
+                    <i class="fas fa-code"></i>
+                    <p>No projects found. Upload your first project!</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Chats -->
+        <div class="chats-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-comment-dots"></i>
+                    Recent Chats
+                </h2>
+                <a href="/admin/chats" class="cyberpunk-btn btn-sm">
+                    <i class="fas fa-comments"></i>
+                    <span>View All</span>
+                </a>
+            </div>
+            
+            <div class="chats-grid" id="chatsGrid">
+                <!-- Chats will be loaded via JavaScript -->
+                <div class="chat-card">
+                    <div class="chat-header">
+                        <div class="chat-user">USER1234</div>
+                        <div class="chat-time">2 hours ago</div>
+                    </div>
+                    <p class="chat-preview">
+                        Hello, I have a question about your React project...
+                    </p>
+                    <span class="chat-status status-open">Open</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="dashboard-footer">
+            <p>Last login: <%= new Date().toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            }) %></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        loadDashboardStats();
+        loadRecentProjects();
+        loadRecentChats();
+        setupDashboardEvents();
+    });
+    
+    async function loadDashboardStats() {
+        try {
+            const response = await fetch('/api/admin/stats', {
+                headers: {
+                    'X-CSRF-Token': window.appData.csrfToken
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                updateStatsUI(data.data);
+            }
+        } catch (error) {
+            console.error('Error loading dashboard stats:', error);
+        }
+    }
+    
+    function updateStatsUI(stats) {
+        // Update project stats
+        document.getElementById('totalProjects').textContent = stats.projects.total;
+        document.getElementById('totalLikes').textContent = stats.projects.likes.toLocaleString();
+        document.getElementById('totalDownloads').textContent = stats.projects.downloads.toLocaleString();
+        document.getElementById('activeChats').textContent = stats.chats.open;
+        
+        // Update trends (simulated for demo)
+        document.getElementById('projectsTrend').textContent = '+12%';
+        document.getElementById('likesTrend').textContent = '+24%';
+        document.getElementById('downloadsTrend').textContent = '+18%';
+        document.getElementById('chatsTrend').textContent = stats.chats.open > 0 ? '+5%' : '0%';
+    }
+    
+    async function loadRecentProjects() {
+        try {
+            const response = await fetch('/api/admin/my-projects?limit=5', {
+                headers: {
+                    'X-CSRF-Token': window.appData.csrfToken
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                displayRecentProjects(data.data);
+            }
+        } catch (error) {
+            console.error('Error loading recent projects:', error);
+        }
+    }
+    
+    function displayRecentProjects(projects) {
+        const table = document.getElementById('projectsTable');
+        
+        if (!projects || projects.length === 0) {
+            table.innerHTML = `
+                <div class="empty-table">
+                    <i class="fas fa-code"></i>
+                    <p>No projects found. Upload your first project!</p>
+                    <a href="/admin/projects/upload" class="cyberpunk-btn btn-sm" style="margin-top: 1rem;">
+                        <i class="fas fa-upload"></i>
+                        <span>Upload Project</span>
+                    </a>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = `
+            <div class="table-header">
+                <div>Project Name</div>
+                <div>Language</div>
+                <div>Likes</div>
+                <div>Downloads</div>
+                <div>Actions</div>
+            </div>
+        `;
+        
+        projects.forEach(project => {
+            const languageColor = getLanguageColor(project.language);
+            
+            html += `
+                <div class="table-row">
+                    <div class="table-cell project-name" data-label="Project">
+                        <i class="fas ${project.type === 'CODE' ? 'fa-code' : 'fa-file'}"></i>
+                        <span>${escapeHtml(project.name)}</span>
+                    </div>
+                    <div class="table-cell" data-label="Language">
+                        <span class="project-language" style="background: ${languageColor}20; border-color: ${languageColor}40; color: ${languageColor}">
+                            ${escapeHtml(project.language)}
+                        </span>
+                    </div>
+                    <div class="table-cell" data-label="Likes">
+                        <div class="project-stats">
+                            <i class="fas fa-heart"></i>
+                            <span>${project.likes}</span>
+                        </div>
+                    </div>
+                    <div class="table-cell" data-label="Downloads">
+                        <div class="project-stats">
+                            <i class="fas fa-download"></i>
+                            <span>${project.downloads}</span>
+                        </div>
+                    </div>
+                    <div class="table-cell" data-label="Actions">
+                        <div class="project-actions">
+                            <a href="/project/${project._id}" class="table-btn" title="View">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="/admin/projects/edit/${project._id}" class="table-btn" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <button class="table-btn delete-project" data-id="${project._id}" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        table.innerHTML = html;
+        
+        // Add delete event listeners
+        document.querySelectorAll('.delete-project').forEach(button => {
+            button.addEventListener('click', function() {
+                const projectId = this.dataset.id;
+                deleteProject(projectId);
+            });
+        });
+    }
+    
+    async function loadRecentChats() {
+        try {
+            const response = await fetch('/api/admin/chats?status=open&limit=3', {
+                headers: {
+                    'X-CSRF-Token': window.appData.csrfToken
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                displayRecentChats(data.data);
+            }
+        } catch (error) {
+            console.error('Error loading recent chats:', error);
+        }
+    }
+    
+    function displayRecentChats(chats) {
+        const grid = document.getElementById('chatsGrid');
+        
+        if (!chats || chats.length === 0) {
+            grid.innerHTML = `
+                <div class="chat-card">
+                    <div class="chat-header">
+                        <div class="chat-user">No active chats</div>
+                    </div>
+                    <p class="chat-preview">
+                        You don't have any active conversations. Check back later!
+                    </p>
+                    <span class="chat-status status-closed">None</span>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '';
+        
+        chats.forEach(chat => {
+            const lastMessage = chat.messages[chat.messages.length - 1];
+            const timeAgo = formatRelativeTime(chat.updatedAt);
+            
+            html += `
+                <div class="chat-card" data-chat-id="${chat._id}">
+                    <div class="chat-header">
+                        <div class="chat-user">${chat.userId}</div>
+                        <div class="chat-time">${timeAgo}</div>
+                    </div>
+                    <p class="chat-preview">
+                        ${escapeHtml(lastMessage?.content || 'No messages')}
+                    </p>
+                    <span class="chat-status ${chat.status === 'open' ? 'status-open' : 'status-closed'}">
+                        ${chat.status === 'open' ? 'Open' : 'Closed'}
+                    </span>
+                </div>
+            `;
+        });
+        
+        grid.innerHTML = html;
+        
+        // Add click event to open chat
+        document.querySelectorAll('.chat-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const chatId = this.dataset.chatId;
+                window.location.href = `/admin/chats/${chatId}`;
+            });
+        });
+    }
+    
+    async function deleteProject(projectId) {
+        if (!confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
+            return;
+        }
+        
+        try {
+            const response = await fetch(`/api/admin/projects/${projectId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-Token': window.appData.csrfToken
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showAlert('success', 'Project deleted successfully');
+                
+                // Reload recent projects
+                loadRecentProjects();
+                loadDashboardStats();
+            } else {
+                showAlert('error', data.message || 'Failed to delete project');
+            }
+        } catch (error) {
+            console.error('Error deleting project:', error);
+            showAlert('error', 'Failed to delete project');
+        }
+    }
+    
+    function setupDashboardEvents() {
+        // Auto-refresh stats every 30 seconds
+        setInterval(() => {
+            loadDashboardStats();
+        }, 30000);
+        
+        // Socket.IO updates
+        if (window.socket) {
+            window.socket.on('project-liked', (projectId) => {
+                // Refresh stats when project is liked
+                loadDashboardStats();
+            });
+        }
+    }
+    
+    function showAlert(type, message) {
+        // Create alert element
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type}`;
+        
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            info: 'fa-info-circle'
+        };
+        
+        alertDiv.innerHTML = `
+            <i class="fas ${icons[type]}"></i>
+            <span>${escapeHtml(message)}</span>
+            <button class="alert-close">&times;</button>
+        `;
+        
+        // Add to page
+        const main = document.querySelector('.cyberpunk-main');
+        if (main) {
+            main.insertBefore(alertDiv, main.firstChild);
+        }
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 5000);
+        
+        // Close button functionality
+        alertDiv.querySelector('.alert-close').addEventListener('click', () => {
+            alertDiv.remove();
+        });
+    }
+    
+    // Helper functions
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    function getLanguageColor(language) {
+        const colors = {
+            javascript: '#F7DF1E',
+            typescript: '#3178C6',
+            python: '#3776AB',
+            java: '#007396',
+            cpp: '#00599C',
+            csharp: '#239120',
+            php: '#777BB4',
+            ruby: '#CC342D',
+            go: '#00ADD8',
+            rust: '#000000',
+            swift: '#FA7343',
+            kotlin: '#7F52FF',
+            html: '#E34F26',
+            css: '#1572B6',
+            vue: '#4FC08D',
+            react: '#61DAFB',
+            angular: '#DD0031',
+            nodejs: '#339933',
+            django: '#092E20',
+            flask: '#000000',
+            laravel: '#FF2D20'
+        };
+        
+        return colors[language.toLowerCase()] || '#6B7280';
+    }
+    
+    function formatRelativeTime(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffSec = Math.floor(diffMs / 1000);
+        const diffMin = Math.floor(diffSec / 60);
+        const diffHour = Math.floor(diffMin / 60);
+        const diffDay = Math.floor(diffHour / 24);
+        
+        if (diffSec < 60) return 'just now';
+        if (diffMin < 60) return `${diffMin}m ago`;
+        if (diffHour < 24) return `${diffHour}h ago`;
+        if (diffDay < 7) return `${diffDay}d ago`;
+        return date.toLocaleDateString();
+    }
+</script>
