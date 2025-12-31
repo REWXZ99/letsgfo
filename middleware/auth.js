@@ -136,13 +136,6 @@ const createRateLimiter = (windowMs, maxRequests) => {
     userRequests.push(now);
     requests.set(ip, userRequests);
     
-    // Cleanup old requests periodically
-    if (Math.random() < 0.01) { // 1% chance to cleanup
-      for (const [key, times] of requests.entries()) {
-        requests.set(key, times.filter(time => time > windowStart));
-      }
-    }
-    
     next();
   };
 };
@@ -189,22 +182,14 @@ const errorHandler = (err, req, res, next) => {
     });
   }
   
-  // JWT error
-  if (err.name === 'JsonWebTokenError') {
-    return res.status(401).json({
-      success: false,
-      message: 'Invalid token'
-    });
-  }
-  
   // Default error
   res.status(err.status || 500).json({
     success: false,
-    message: err.message || 'Internal server error',
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+    message: err.message || 'Internal server error'
   });
 };
 
+// Export semua middleware sebagai object
 module.exports = {
   requireAuth,
   requireRole,
