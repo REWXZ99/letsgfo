@@ -9,10 +9,10 @@ const morgan = require('morgan');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
+const http = require('http');
+const socketIo = require('socket.io');
 
 const app = express();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
 
 // Konfigurasi Cloudinary
 const cloudinary = require('cloudinary').v2;
@@ -34,28 +34,20 @@ mongoose.connect(MONGODB_URI, {
 
 // Middleware Security
 app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.socket.io"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
-      connectSrc: ["'self'", "https://api.cloudinary.com"]
-    }
-  }
+  contentSecurityPolicy: false, // Nonaktifkan untuk development
+  crossOriginEmbedderPolicy: false
 }));
 
 app.use(compression());
 app.use(morgan('dev'));
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Rate Limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100
 });
 app.use('/api/', limiter);
 
@@ -66,11 +58,11 @@ app.use(session({
   saveUninitialized: false,
   store: MongoStore.create({
     mongoUrl: MONGODB_URI,
-    ttl: 24 * 60 * 60 // 1 day
+    ttl: 24 * 60 * 60
   }),
   cookie: {
     secure: process.env.NODE_ENV === 'production',
-    maxAge: 24 * 60 * 60 * 1000 // 1 day
+    maxAge: 24 * 60 * 60 * 1000
   }
 }));
 
@@ -82,9 +74,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Global variables for EJS
 app.use((req, res, next) => {
   res.locals.currentPath = req.path;
-  res.locals.isAuthenticated = req.session.isAuthenticated;
-  res.locals.admin = req.session.admin;
+  res.locals.isAuthenticated = req.session.isAuthenticated || false;
+  res.locals.admin = req.session.admin || null;
   next();
+});
+
+// Create HTTP server for Socket.IO
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
 });
 
 // Socket.IO for real-time features
@@ -107,6 +108,9 @@ io.on('connection', (socket) => {
     console.log('User disconnected');
   });
 });
+
+// Attach io to app for use in routes
+app.set('io', io);
 
 // Basic Routes
 app.get('/', (req, res) => {
@@ -136,6 +140,20 @@ app.get('/admin/dashboard', (req, res) => {
   res.render('pages/admin/dashboard');
 });
 
+app.get('/admin/projects/upload', (req, res) => {
+  if (!req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('pages/admin/project-upload');
+});
+
+app.get('/admin/profile', (req, res) => {
+  if (!req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('pages/admin/profile');
+});
+
 // API Routes
 const apiRoutes = require('./routes/api');
 app.use('/api', apiRoutes);
@@ -147,12 +165,24 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).render('pages/500');
+  res.status(500).render('pages/500', { 
+    error: process.env.NODE_ENV === 'development' ? err : null,
+    env: process.env.NODE_ENV
+  });
 });
 
-// Start server
-const PORT = process.env.PORT || 3000;
-http.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`🌐 Visit: http://localhost:${PORT}`);
-});
+// Export untuk Vercel (WAJIB untuk deployment)
+module.exports = (req, res) => {
+  // Attach io to request
+  req.io = io;
+  return app(req, res);
+};
+
+// Start server untuk development
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  server.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`🌐 Visit: http://localhost:${PORT}`);
+  });
+}
