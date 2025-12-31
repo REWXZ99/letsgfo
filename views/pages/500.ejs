@@ -1,149 +1,64 @@
-<%- include('../layouts/main', { 
-    title: '500 - Server Error',
-    headContent: `
-        <style>
-            .error-section {
-                min-height: 70vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 2rem 1rem;
-                text-align: center;
-            }
-            
-            .error-container {
-                max-width: 600px;
-            }
-            
-            .error-code {
-                font-size: 6rem;
-                font-weight: 700;
-                background: linear-gradient(90deg, var(--red), #ff6b6b);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                margin-bottom: 1rem;
-                font-family: var(--font-code);
-            }
-            
-            .error-title {
-                font-size: 2rem;
-                font-weight: 600;
-                color: white;
-                margin-bottom: 1rem;
-            }
-            
-            .error-message {
-                color: var(--zinc-500);
-                font-size: 1.1rem;
-                margin-bottom: 2rem;
-                line-height: 1.6;
-            }
-            
-            .error-details {
-                background: rgba(255, 0, 0, 0.1);
-                border: 1px solid rgba(255, 0, 0, 0.2);
-                border-radius: var(--radius-lg);
-                padding: 1.5rem;
-                margin: 2rem 0;
-                text-align: left;
-                font-family: var(--font-code);
-                font-size: 0.9rem;
-                color: var(--zinc-400);
-                display: none;
-            }
-            
-            <% if (env === 'development' && error) { %>
-            .error-details {
-                display: block;
-            }
-            <% } %>
-            
-            .error-actions {
-                display: flex;
-                justify-content: center;
-                gap: 1rem;
-                flex-wrap: wrap;
-            }
-            
-            .glitch-text {
-                animation: glitch 1s linear infinite;
-            }
-            
-            @keyframes glitch {
-                0% {
-                    transform: translate(0);
-                }
-                20% {
-                    transform: translate(-2px, 2px);
-                }
-                40% {
-                    transform: translate(-2px, -2px);
-                }
-                60% {
-                    transform: translate(2px, 2px);
-                }
-                80% {
-                    transform: translate(2px, -2px);
-                }
-                100% {
-                    transform: translate(0);
-                }
-            }
-            
-            @media (max-width: 480px) {
-                .error-code {
-                    font-size: 4rem;
-                }
-                
-                .error-title {
-                    font-size: 1.5rem;
-                }
-            }
-        </style>
-    `
+<!DOCTYPE html>
+<html lang="en" class="cyberpunk-theme">
+<%- include('../partials/head', { 
+    title: typeof title !== 'undefined' ? title : '500 - Server Error',
+    headContent: typeof headContent !== 'undefined' ? headContent : '',
+    csrfToken: typeof csrfToken !== 'undefined' ? csrfToken : ''
 }) %>
-
-<div class="error-section">
-    <div class="error-container">
-        <div class="error-code glitch-text">500</div>
-        <h1 class="error-title">Server Error</h1>
+<body>
+    <!-- Cyberpunk Scan Lines Overlay -->
+    <div class="scan-lines"></div>
+    
+    <!-- Red Grid Overlay -->
+    <div class="grid-overlay"></div>
+    
+    <!-- Main Container -->
+    <div class="cyberpunk-container">
+        <!-- Header -->
+        <%- include('../partials/header', {
+            currentPath: typeof currentPath !== 'undefined' ? currentPath : '/',
+            isAuthenticated: false,
+            admin: null,
+            csrfToken: typeof csrfToken !== 'undefined' ? csrfToken : ''
+        }) %>
         
-        <p class="error-message">
-            Something went wrong on our end. Our team has been notified and is working on a fix.
-        </p>
-        
-        <% if (typeof env !== 'undefined' && env === 'development' && typeof error !== 'undefined' && error) { %>
-            <div class="error-details">
-                <strong>Error Details:</strong>
-                <pre style="margin-top: 0.5rem; overflow-x: auto;"><%= error.stack %></pre>
+        <!-- Main Content -->
+        <main class="cyberpunk-main">
+            <div class="error-section">
+                <div class="error-container">
+                    <div class="error-code glitch-text">500</div>
+                    <h1 class="error-title">Server Error</h1>
+                    
+                    <p class="error-message">
+                        Something went wrong on our end. Our team has been notified and is working on a fix.
+                    </p>
+                    
+                    <% if (typeof env !== 'undefined' && env === 'development' && typeof error !== 'undefined' && error) { %>
+                        <div class="error-details">
+                            <strong>Error Details:</strong>
+                            <pre style="margin-top: 0.5rem; overflow-x: auto;"><%= error.stack %></pre>
+                        </div>
+                    <% } %>
+                    
+                    <div class="error-actions">
+                        <a href="/" class="cyberpunk-btn">
+                            <i class="fas fa-home"></i>
+                            <span>Back to Home</span>
+                        </a>
+                        <button onclick="location.reload()" class="cyberpunk-btn btn-outline">
+                            <i class="fas fa-redo"></i>
+                            <span>Try Again</span>
+                        </button>
+                    </div>
+                </div>
             </div>
-        <% } %>
+        </main>
         
-        <div class="error-actions">
-            <a href="/" class="cyberpunk-btn">
-                <i class="fas fa-home"></i>
-                <span>Back to Home</span>
-            </a>
-            <button onclick="location.reload()" class="cyberpunk-btn btn-outline">
-                <i class="fas fa-redo"></i>
-                <span>Try Again</span>
-            </button>
-        </div>
+        <!-- Footer -->
+        <%- include('../partials/footer') %>
     </div>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add error logging
-        console.error('500 Error Page Loaded');
-        
-        // Try to get more error details from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const errorId = urlParams.get('errorId');
-        
-        if (errorId) {
-            console.error('Error ID:', errorId);
-        }
-    });
-</script>
+    
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
