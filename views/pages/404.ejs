@@ -1,0 +1,104 @@
+<%- include('../layouts/main', { 
+    title: '404 - Page Not Found',
+    headContent: `
+        <style>
+            .error-section {
+                min-height: 70vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem 1rem;
+                text-align: center;
+            }
+            
+            .error-container {
+                max-width: 600px;
+            }
+            
+            .error-code {
+                font-size: 6rem;
+                font-weight: 700;
+                background: linear-gradient(90deg, var(--red), #ff6b6b);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                margin-bottom: 1rem;
+                font-family: var(--font-code);
+            }
+            
+            .error-title {
+                font-size: 2rem;
+                font-weight: 600;
+                color: white;
+                margin-bottom: 1rem;
+            }
+            
+            .error-message {
+                color: var(--zinc-500);
+                font-size: 1.1rem;
+                margin-bottom: 2rem;
+                line-height: 1.6;
+            }
+            
+            .error-actions {
+                display: flex;
+                justify-content: center;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+            
+            .scan-animation {
+                position: relative;
+                margin: 3rem auto;
+                width: 300px;
+                height: 2px;
+                background: linear-gradient(90deg, transparent, var(--red), transparent);
+                animation: scanMove 2s ease-in-out infinite;
+            }
+            
+            @keyframes scanMove {
+                0% {
+                    transform: translateX(-100%);
+                }
+                100% {
+                    transform: translateX(100%);
+                }
+            }
+            
+            @media (max-width: 480px) {
+                .error-code {
+                    font-size: 4rem;
+                }
+                
+                .error-title {
+                    font-size: 1.5rem;
+                }
+            }
+        </style>
+    `
+}) %>
+
+<div class="error-section">
+    <div class="error-container">
+        <div class="error-code">404</div>
+        <h1 class="error-title">Page Not Found</h1>
+        
+        <div class="scan-animation"></div>
+        
+        <p class="error-message">
+            The page you're looking for doesn't exist or has been moved.
+            Let's get you back on track.
+        </p>
+        
+        <div class="error-actions">
+            <a href="/" class="cyberpunk-btn">
+                <i class="fas fa-home"></i>
+                <span>Back to Home</span>
+            </a>
+            <a href="/#projects" class="cyberpunk-btn btn-outline">
+                <i class="fas fa-code"></i>
+                <span>Browse Projects</span>
+            </a>
+        </div>
+    </div>
+</div>
