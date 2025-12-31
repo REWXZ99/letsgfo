@@ -1,6 +1,5 @@
 const Chat = require('../models/Chat');
 const Admin = require('../models/Admin');
-const { v4: uuidv4 } = require('uuid');
 
 // Get user chats (no login required)
 exports.getUserChats = async (req, res) => {
