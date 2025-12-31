@@ -1,0 +1,621 @@
+<%- include('../layouts/main', { 
+    title: 'Home - Discover Amazing Projects',
+    headContent: `
+        <style>
+            .hero-section {
+                position: relative;
+                padding: 4rem 1rem;
+                text-align: center;
+                background: linear-gradient(180deg, 
+                    rgba(0,0,0,0.95) 0%, 
+                    rgba(20,20,20,0.9) 100%);
+                border-bottom: 1px solid rgba(255,0,0,0.1);
+                overflow: hidden;
+            }
+            
+            .hero-glow {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 800px;
+                height: 800px;
+                background: radial-gradient(circle, 
+                    rgba(255,0,0,0.1) 0%, 
+                    rgba(255,0,0,0) 70%);
+                z-index: 0;
+            }
+            
+            .hero-title {
+                font-size: clamp(2.5rem, 5vw, 4rem);
+                font-weight: 700;
+                background: linear-gradient(90deg, 
+                    #fff 0%, 
+                    #ff0000 50%, 
+                    #fff 100%);
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                animation: shine 3s linear infinite;
+                margin-bottom: 1rem;
+                position: relative;
+                z-index: 1;
+            }
+            
+            @keyframes shine {
+                to { background-position: 200% center; }
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+                color: #a1a1aa;
+                max-width: 600px;
+                margin: 0 auto 2rem;
+                line-height: 1.6;
+                position: relative;
+                z-index: 1;
+            }
+            
+            .hero-stats {
+                display: flex;
+                justify-content: center;
+                gap: 3rem;
+                flex-wrap: wrap;
+                margin-top: 3rem;
+                position: relative;
+                z-index: 1;
+            }
+            
+            .hero-stat {
+                text-align: center;
+            }
+            
+            .stat-number {
+                display: block;
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: #ff0000;
+                font-family: 'JetBrains Mono', monospace;
+            }
+            
+            .stat-label {
+                font-size: 0.9rem;
+                color: #71717a;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            
+            .featured-section {
+                padding: 4rem 1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+                font-weight: 600;
+                margin-bottom: 2rem;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            
+            .section-title::before {
+                content: '';
+                display: block;
+                width: 4px;
+                height: 24px;
+                background: #ff0000;
+            }
+            
+            .projects-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 3rem;
+            }
+            
+            .project-card {
+                background: rgba(10, 10, 10, 0.8);
+                border: 1px solid rgba(255, 0, 0, 0.1);
+                border-radius: 2.5rem;
+                padding: 1.5rem;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .project-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 2px;
+                background: linear-gradient(90deg, 
+                    transparent, 
+                    #ff0000, 
+                    transparent);
+                transition: left 0.5s ease;
+            }
+            
+            .project-card:hover {
+                transform: translateY(-5px);
+                border-color: rgba(255, 0, 0, 0.3);
+                box-shadow: 0 10px 30px rgba(255, 0, 0, 0.1);
+            }
+            
+            .project-card:hover::before {
+                left: 100%;
+            }
+            
+            .project-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 1rem;
+            }
+            
+            .project-title {
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: #fff;
+                margin: 0;
+            }
+            
+            .project-language {
+                display: inline-block;
+                padding: 0.25rem 0.75rem;
+                background: rgba(255, 0, 0, 0.1);
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                border-radius: 1rem;
+                font-size: 0.85rem;
+                font-family: 'JetBrains Mono', monospace;
+                color: #ff0000;
+            }
+            
+            .project-type {
+                display: inline-block;
+                padding: 0.25rem 0.75rem;
+                background: rgba(59, 130, 246, 0.1);
+                border: 1px solid rgba(59, 130, 246, 0.2);
+                border-radius: 1rem;
+                font-size: 0.85rem;
+                color: #3b82f6;
+                margin-left: 0.5rem;
+            }
+            
+            .project-author {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                margin-bottom: 1rem;
+            }
+            
+            .author-avatar {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 1px solid rgba(255, 0, 0, 0.3);
+            }
+            
+            .author-name {
+                font-size: 0.9rem;
+                color: #a1a1aa;
+            }
+            
+            .project-stats {
+                display: flex;
+                gap: 1.5rem;
+                margin-top: 1rem;
+            }
+            
+            .project-stat {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: #71717a;
+                font-size: 0.9rem;
+            }
+            
+            .project-stat i {
+                color: #ff0000;
+            }
+            
+            .no-projects {
+                text-align: center;
+                padding: 3rem;
+                color: #71717a;
+                font-size: 1.1rem;
+            }
+            
+            .no-projects i {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                color: #ff0000;
+                opacity: 0.5;
+            }
+            
+            .load-more {
+                text-align: center;
+                margin-top: 2rem;
+            }
+            
+            .chat-section {
+                padding: 4rem 1rem;
+                background: rgba(10, 10, 10, 0.8);
+                border-top: 1px solid rgba(255, 0, 0, 0.1);
+                border-bottom: 1px solid rgba(255, 0, 0, 0.1);
+            }
+            
+            .admins-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+                margin-top: 2rem;
+            }
+            
+            .admin-card {
+                background: rgba(15, 15, 15, 0.8);
+                border: 1px solid rgba(255, 0, 0, 0.1);
+                border-radius: 2.5rem;
+                padding: 2rem;
+                text-align: center;
+                transition: all 0.3s ease;
+            }
+            
+            .admin-card:hover {
+                border-color: rgba(255, 0, 0, 0.3);
+                transform: translateY(-5px);
+            }
+            
+            .admin-avatar {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid #ff0000;
+                margin: 0 auto 1rem;
+                position: relative;
+            }
+            
+            .admin-status {
+                position: absolute;
+                bottom: 10px;
+                right: 10px;
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                border: 2px solid #000;
+            }
+            
+            .status-online {
+                background: #10b981;
+            }
+            
+            .status-offline {
+                background: #71717a;
+            }
+            
+            .admin-name {
+                font-size: 1.5rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+            }
+            
+            .admin-role {
+                display: inline-block;
+                padding: 0.25rem 1rem;
+                background: rgba(255, 0, 0, 0.1);
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                border-radius: 1rem;
+                font-size: 0.9rem;
+                color: #ff0000;
+                margin-bottom: 1rem;
+            }
+            
+            .admin-quote {
+                font-style: italic;
+                color: #a1a1aa;
+                margin-bottom: 1rem;
+                font-size: 0.95rem;
+                line-height: 1.5;
+            }
+            
+            .admin-hashtags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                justify-content: center;
+                margin-bottom: 1.5rem;
+            }
+            
+            .hashtag {
+                font-size: 0.85rem;
+                color: #71717a;
+                font-family: 'JetBrains Mono', monospace;
+            }
+            
+            @media (max-width: 768px) {
+                .hero-section {
+                    padding: 3rem 1rem;
+                }
+                
+                .hero-stats {
+                    gap: 2rem;
+                }
+                
+                .projects-grid {
+                    grid-template-columns: 1fr;
+                }
+                
+                .admins-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    `
+}) %>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-glow"></div>
+    
+    <div class="container">
+        <h1 class="hero-title">SOURCE CODE HUB</h1>
+        <p class="hero-subtitle">
+            A premium platform where programming legends share their masterpieces. 
+            Discover, learn, and contribute to the future of code.
+        </p>
+        
+        <div class="hero-actions">
+            <a href="#projects" class="cyberpunk-btn">
+                <i class="fas fa-code"></i>
+                <span>Explore Projects</span>
+            </a>
+            <a href="/legends" class="cyberpunk-btn btn-outline">
+                <i class="fas fa-crown"></i>
+                <span>Meet Legends</span>
+            </a>
+        </div>
+        
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <span class="stat-number" id="totalProjects">0</span>
+                <span class="stat-label">Projects</span>
+            </div>
+            <div class="hero-stat">
+                <span class="stat-number" id="totalLikes">0</span>
+                <span class="stat-label">Likes</span>
+            </div>
+            <div class="hero-stat">
+                <span class="stat-number" id="totalDownloads">0</span>
+                <span class="stat-label">Downloads</span>
+            </div>
+            <div class="hero-stat">
+                <span class="stat-number">2</span>
+                <span class="stat-label">Legends</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Projects Section -->
+<section class="featured-section" id="projects">
+    <div class="container">
+        <h2 class="section-title">
+            <i class="fas fa-fire"></i>
+            Latest Projects
+        </h2>
+        
+        <div class="projects-filters">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="CODE">Code</button>
+                <button class="filter-btn" data-filter="FILE">Files</button>
+                <button class="filter-btn" data-filter="popular">Popular</button>
+            </div>
+            
+            <div class="sort-dropdown">
+                <select id="sortSelect" class="cyberpunk-select">
+                    <option value="newest">Newest First</option>
+                    <option value="popular">Most Popular</option>
+                    <option value="most-liked">Most Liked</option>
+                    <option value="most-downloaded">Most Downloaded</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="projects-grid" id="projectsGrid">
+            <!-- Projects will be loaded via JavaScript -->
+            <div class="loading-projects">
+                <div class="cyberpunk-loader small">
+                    <div class="loader-grid">
+                        <div class="loader-cell"></div>
+                        <div class="loader-cell"></div>
+                        <div class="loader-cell"></div>
+                        <div class="loader-cell"></div>
+                        <div class="loader-cell"></div>
+                        <div class="loader-cell"></div>
+                        <div class="loader-cell"></div>
+                        <div class="loader-cell"></div>
+                        <div class="loader-cell"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="load-more">
+            <button id="loadMoreBtn" class="cyberpunk-btn btn-outline">
+                <i class="fas fa-sync-alt"></i>
+                <span>Load More Projects</span>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Chat with Admin Section -->
+<section class="chat-section" id="chat">
+    <div class="container">
+        <h2 class="section-title">
+            <i class="fas fa-comments"></i>
+            Chat with Legends
+        </h2>
+        <p class="section-subtitle">
+            Get instant help from our Legends. No login required!
+        </p>
+        
+        <div class="admins-grid">
+            <!-- SilverHold Official Card -->
+            <div class="admin-card">
+                <div class="admin-avatar-wrapper">
+                    <img src="https://res.cloudinary.com/dnb0q2s2h/image/upload/v1700000000/silverhold-avatar.jpg" 
+                         alt="SilverHold Official" 
+                         class="admin-avatar">
+                    <div class="admin-status status-online" id="silverholdStatus"></div>
+                </div>
+                
+                <h3 class="admin-name">SilverHold Official</h3>
+                <span class="admin-role">👑 Admin</span>
+                
+                <blockquote class="admin-quote">
+                    "Jangan lupa sholat walaupun kamu seorang pendosa, Allah lebih suka orang pendosa yang sering bertaubat daripada orang yang merasa suci"
+                </blockquote>
+                
+                <div class="admin-hashtags">
+                    <span class="hashtag">#bismillahcalonustad</span>
+                </div>
+                
+                <button class="cyberpunk-btn btn-sm start-chat" 
+                        data-admin-id="silverhold" 
+                        data-admin-name="SilverHold Official">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>CHAT ADMIN</span>
+                </button>
+            </div>
+            
+            <!-- Brayn Official Card -->
+            <div class="admin-card">
+                <div class="admin-avatar-wrapper">
+                    <img src="https://res.cloudinary.com/dnb0q2s2h/image/upload/v1700000000/brayn-avatar.jpg" 
+                         alt="Brayn Official" 
+                         class="admin-avatar">
+                    <div class="admin-status status-online" id="braynStatus"></div>
+                </div>
+                
+                <h3 class="admin-name">Brayn Official</h3>
+                <span class="admin-role">👑 Owner</span>
+                
+                <blockquote class="admin-quote">
+                    "Tidak Semua Orang Suka Kita Berkembang Pesat!"
+                </blockquote>
+                
+                <div class="admin-hashtags">
+                    <span class="hashtag">#backenddev</span>
+                    <span class="hashtag">#frontenddev</span>
+                    <span class="hashtag">#BraynOfficial</span>
+                </div>
+                
+                <button class="cyberpunk-btn btn-sm start-chat" 
+                        data-admin-id="braynofficial" 
+                        data-admin-name="Brayn Official">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>CHAT OWNER</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Chat Modal -->
+<div class="chat-modal" id="chatModal">
+    <div class="chat-modal-content">
+        <div class="chat-header">
+            <div class="chat-admin-info">
+                <img src="" alt="" class="chat-admin-avatar" id="chatAdminAvatar">
+                <div>
+                    <h4 id="chatAdminName"></h4>
+                    <span class="chat-admin-status" id="chatAdminStatus"></span>
+                </div>
+            </div>
+            <button class="chat-close" id="closeChat">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <!-- Messages will appear here -->
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" 
+                   id="chatInput" 
+                   placeholder="Type your message..."
+                   autocomplete="off">
+            <button id="sendMessage" class="cyberpunk-btn btn-sm">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Home page JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load stats
+        loadPlatformStats();
+        
+        // Load projects
+        loadProjects();
+        
+        // Setup chat functionality
+        setupChat();
+        
+        // Setup event listeners
+        setupEventListeners();
+    });
+    
+    async function loadPlatformStats() {
+        try {
+            const response = await fetch('/api/stats');
+            const data = await response.json();
+            
+            if (data.success) {
+                document.getElementById('totalProjects').textContent = data.data.totalProjects;
+                document.getElementById('totalLikes').textContent = data.data.totalLikes.toLocaleString();
+                document.getElementById('totalDownloads').textContent = data.data.totalDownloads.toLocaleString();
+                
+                // Update footer stats
+                updateFooterStats(data.data);
+            }
+        } catch (error) {
+            console.error('Error loading stats:', error);
+        }
+    }
+    
+    function updateFooterStats(stats) {
+        const footerStats = document.getElementById('footerStats');
+        if (footerStats) {
+            footerStats.innerHTML = `
+                <div class="stat-item">
+                    <span class="stat-value">${stats.totalProjects}</span>
+                    <span class="stat-label">Projects</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">${stats.totalLikes.toLocaleString()}</span>
+                    <span class="stat-label">Likes</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">${stats.totalDownloads.toLocaleString()}</span>
+                    <span class="stat-label">Downloads</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">2</span>
+                    <span class="stat-label">Legends</span>
+                </div>
+            `;
+        }
+    }
+    
+    // More JavaScript functions for projects and chat will be in main.js
+</script>
