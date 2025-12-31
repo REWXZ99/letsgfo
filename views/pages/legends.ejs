@@ -182,4 +182,675 @@
             .legend-stat-value {
                 display: block;
                 font-size: 1.25rem;
-                font-weight: 
+                font-weight: 700;
+                color: var(--red);
+                font-family: var(--font-code);
+            }
+            
+            .legend-stat-label {
+                font-size: 0.75rem;
+                color: var(--zinc-500);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            
+            .legend-actions {
+                display: flex;
+                gap: 1rem;
+            }
+            
+            .legend-btn {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                padding: 0.75rem;
+                border-radius: var(--radius-xl);
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-decoration: none;
+            }
+            
+            .legend-btn.chat {
+                background: rgba(255, 0, 0, 0.1);
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                color: var(--red);
+            }
+            
+            .legend-btn.chat:hover {
+                background: rgba(255, 0, 0, 0.2);
+            }
+            
+            .legend-btn.projects {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: var(--zinc-300);
+            }
+            
+            .legend-btn.projects:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+            
+            .platform-stats-section {
+                background: rgba(10, 10, 10, 0.8);
+                border: 1px solid rgba(255, 0, 0, 0.1);
+                border-radius: var(--radius-2xl);
+                padding: 3rem;
+                text-align: center;
+            }
+            
+            .stats-title {
+                font-size: 1.5rem;
+                font-weight: 600;
+                margin-bottom: 2rem;
+                color: white;
+            }
+            
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 2rem;
+            }
+            
+            .stat-card {
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid rgba(255, 0, 0, 0.1);
+                border-radius: var(--radius-xl);
+                padding: 1.5rem;
+                transition: all 0.3s ease;
+            }
+            
+            .stat-card:hover {
+                border-color: rgba(255, 0, 0, 0.3);
+                transform: translateY(-5px);
+            }
+            
+            .stat-icon-large {
+                font-size: 2rem;
+                color: var(--red);
+                margin-bottom: 1rem;
+            }
+            
+            .stat-number-large {
+                font-size: 2rem;
+                font-weight: 700;
+                color: white;
+                font-family: var(--font-code);
+                margin-bottom: 0.5rem;
+            }
+            
+            .stat-label-large {
+                font-size: 0.9rem;
+                color: var(--zinc-500);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            
+            .empty-state {
+                text-align: center;
+                padding: 4rem 2rem;
+                color: var(--zinc-500);
+            }
+            
+            .empty-state i {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                color: var(--red);
+                opacity: 0.5;
+            }
+            
+            .empty-state h3 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+                color: var(--zinc-400);
+            }
+            
+            @media (max-width: 768px) {
+                .legends-grid {
+                    grid-template-columns: 1fr;
+                }
+                
+                .legend-header {
+                    flex-direction: column;
+                    text-align: center;
+                    gap: 1rem;
+                }
+                
+                .legend-actions {
+                    flex-direction: column;
+                }
+                
+                .stats-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+            
+            @media (max-width: 480px) {
+                .stats-grid {
+                    grid-template-columns: 1fr;
+                }
+                
+                .legend-stats {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+        </style>
+    `
+}) %>
+
+<div class="legends-section">
+    <div class="legends-container">
+        <!-- Hero Section -->
+        <div class="legends-hero">
+            <h1 class="legends-title">THE LEGENDS</h1>
+            <p class="legends-subtitle">
+                Meet the masterminds behind Source Code Hub. These developers share their expertise 
+                and amazing projects with the community for free.
+            </p>
+        </div>
+        
+        <!-- Legends Grid -->
+        <div class="legends-grid" id="legendsGrid">
+            <!-- Legends will be loaded via JavaScript -->
+            <div class="loading-legends">
+                <div class="cyberpunk-loader">
+                    <div class="loader-grid">
+                        <div class="loader-cell"></div>
+                        <div class="loader-cell"></div>
+                        <div class="loader-cell"></div>
+                        <div class="loader-cell"></div>
+                        <div class="loader-cell"></div>
+                        <div class="loader-cell"></div>
+                        <div class="loader-cell"></div>
+                        <div class="loader-cell"></div>
+                        <div class="loader-cell"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Platform Stats -->
+        <div class="platform-stats-section">
+            <h2 class="stats-title">Platform Statistics</h2>
+            <div class="stats-grid" id="platformStats">
+                <!-- Stats will be loaded via JavaScript -->
+                <div class="stat-card">
+                    <div class="stat-icon-large">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="stat-number-large loading">--</div>
+                    <div class="stat-label-large">Total Projects</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-large">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="stat-number-large loading">--</div>
+                    <div class="stat-label-large">Total Likes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-large">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <div class="stat-number-large loading">--</div>
+                    <div class="stat-label-large">Total Downloads</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-large">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-number-large">2</div>
+                    <div class="stat-label-large">Active Legends</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chat Modal -->
+<div class="chat-modal" id="chatModal">
+    <div class="chat-modal-content">
+        <div class="chat-header">
+            <div class="chat-admin-info">
+                <img src="" alt="" class="chat-admin-avatar" id="chatAdminAvatar">
+                <div>
+                    <h4 id="chatAdminName"></h4>
+                    <span class="chat-admin-status" id="chatAdminStatus"></span>
+                </div>
+            </div>
+            <button class="chat-close" id="closeChat">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <!-- Messages will appear here -->
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" 
+                   id="chatInput" 
+                   placeholder="Type your message..."
+                   autocomplete="off">
+            <button id="sendMessage" class="cyberpunk-btn btn-sm">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        loadLegends();
+        loadPlatformStats();
+        setupChatFunctionality();
+    });
+    
+    async function loadLegends() {
+        try {
+            const response = await fetch('/api/legends');
+            const data = await response.json();
+            
+            if (data.success) {
+                displayLegends(data.data);
+            }
+        } catch (error) {
+            console.error('Error loading legends:', error);
+            showErrorState();
+        }
+    }
+    
+    function displayLegends(legends) {
+        const legendsGrid = document.getElementById('legendsGrid');
+        
+        if (!legends || legends.length === 0) {
+            legendsGrid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-crown"></i>
+                    <h3>No Legends Found</h3>
+                    <p>Check back soon for legendary developers!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        legendsGrid.innerHTML = '';
+        
+        legends.forEach(legend => {
+            const legendCard = createLegendCard(legend);
+            legendsGrid.appendChild(legendCard);
+        });
+    }
+    
+    function createLegendCard(legend) {
+        const card = document.createElement('div');
+        card.className = `legend-card ${legend.role.toLowerCase()}`;
+        
+        const isOwner = legend.role === 'Owner';
+        const statusClass = legend.isOnline ? 'status-online' : 'status-offline';
+        const statusText = legend.isOnline ? 'Online' : 'Offline';
+        
+        card.innerHTML = `
+            <div class="legend-header">
+                <div class="legend-avatar-wrapper">
+                    <img src="${legend.photoUrl || '/images/default-avatar.png'}" 
+                         alt="${escapeHtml(legend.name)}"
+                         class="legend-avatar ${isOwner ? 'owner' : ''}">
+                    <div class="legend-status ${statusClass}"></div>
+                </div>
+                
+                <div class="legend-info">
+                    <h2 class="legend-name">
+                        ${escapeHtml(legend.name)}
+                        <span class="legend-role ${isOwner ? 'owner' : ''}">
+                            ${isOwner ? '👑 Owner' : '👑 Admin'}
+                        </span>
+                    </h2>
+                    <div class="legend-username">
+                        <i class="fas fa-at"></i>
+                        <span>@${legend.username}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <blockquote class="legend-quote">
+                "${escapeHtml(legend.quote || 'No quote available')}"
+            </blockquote>
+            
+            ${legend.hashtags && legend.hashtags.length > 0 ? `
+                <div class="legend-hashtags">
+                    ${legend.hashtags.map(tag => `
+                        <span class="hashtag">${escapeHtml(tag)}</span>
+                    `).join('')}
+                </div>
+            ` : ''}
+            
+            <div class="legend-stats">
+                <div class="legend-stat">
+                    <span class="legend-stat-value" id="projectsCount-${legend._id}">--</span>
+                    <span class="legend-stat-label">Projects</span>
+                </div>
+                <div class="legend-stat">
+                    <span class="legend-stat-value" id="likesCount-${legend._id}">--</span>
+                    <span class="legend-stat-label">Likes</span>
+                </div>
+                <div class="legend-stat">
+                    <span class="legend-stat-value" id="downloadsCount-${legend._id}">--</span>
+                    <span class="legend-stat-label">Downloads</span>
+                </div>
+            </div>
+            
+            <div class="legend-actions">
+                <button class="legend-btn chat" 
+                        data-legend-id="${legend._id}"
+                        data-legend-name="${escapeHtml(legend.name)}"
+                        data-legend-username="${legend.username}">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>Start Chat</span>
+                </button>
+                <a href="/legends/${legend.username}" class="legend-btn projects">
+                    <i class="fas fa-code"></i>
+                    <span>View Projects</span>
+                </a>
+            </div>
+        `;
+        
+        // Load individual legend stats
+        loadLegendStats(legend._id, legend.username);
+        
+        return card;
+    }
+    
+    async function loadLegendStats(legendId, username) {
+        try {
+            const response = await fetch(`/api/legends/${username}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                const stats = data.data.stats;
+                document.getElementById(`projectsCount-${legendId}`).textContent = stats.totalProjects;
+                document.getElementById(`likesCount-${legendId}`).textContent = stats.totalLikes.toLocaleString();
+                document.getElementById(`downloadsCount-${legendId}`).textContent = stats.totalDownloads.toLocaleString();
+            }
+        } catch (error) {
+            console.error('Error loading legend stats:', error);
+        }
+    }
+    
+    async function loadPlatformStats() {
+        try {
+            const response = await fetch('/api/stats');
+            const data = await response.json();
+            
+            if (data.success) {
+                updatePlatformStatsUI(data.data);
+            }
+        } catch (error) {
+            console.error('Error loading platform stats:', error);
+        }
+    }
+    
+    function updatePlatformStatsUI(stats) {
+        const statsGrid = document.getElementById('platformStats');
+        
+        statsGrid.innerHTML = `
+            <div class="stat-card">
+                <div class="stat-icon-large">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="stat-number-large">${stats.totalProjects}</div>
+                <div class="stat-label-large">Total Projects</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon-large">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="stat-number-large">${stats.totalLikes.toLocaleString()}</div>
+                <div class="stat-label-large">Total Likes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon-large">
+                    <i class="fas fa-download"></i>
+                </div>
+                <div class="stat-number-large">${stats.totalDownloads.toLocaleString()}</div>
+                <div class="stat-label-large">Total Downloads</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon-large">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-number-large">2</div>
+                <div class="stat-label-large">Active Legends</div>
+            </div>
+        `;
+    }
+    
+    function setupChatFunctionality() {
+        // Chat buttons
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.legend-btn.chat')) {
+                const button = e.target.closest('.legend-btn.chat');
+                const legendId = button.dataset.legendId;
+                const legendName = button.dataset.legendName;
+                const legendUsername = button.dataset.legendUsername;
+                
+                openChatModal(legendUsername, legendName);
+            }
+        });
+        
+        // Chat modal close
+        const closeChatBtn = document.getElementById('closeChat');
+        if (closeChatBtn) {
+            closeChatBtn.addEventListener('click', closeChatModal);
+        }
+        
+        // Send message
+        const sendMessageBtn = document.getElementById('sendMessage');
+        if (sendMessageBtn) {
+            sendMessageBtn.addEventListener('click', sendChatMessage);
+        }
+        
+        // Enter key to send message
+        const chatInput = document.getElementById('chatInput');
+        if (chatInput) {
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendChatMessage();
+                }
+            });
+        }
+        
+        // Close modal on outside click
+        const chatModal = document.getElementById('chatModal');
+        if (chatModal) {
+            chatModal.addEventListener('click', function(e) {
+                if (e.target === chatModal) {
+                    closeChatModal();
+                }
+            });
+        }
+    }
+    
+    function openChatModal(adminId, adminName) {
+        const chatModal = document.getElementById('chatModal');
+        const chatAdminName = document.getElementById('chatAdminName');
+        const chatAdminAvatar = document.getElementById('chatAdminAvatar');
+        
+        window.currentChat = {
+            adminId: adminId,
+            adminName: adminName
+        };
+        
+        // Update modal content
+        chatAdminName.textContent = adminName;
+        chatAdminAvatar.src = getAdminAvatar(adminId);
+        chatAdminAvatar.alt = adminName;
+        
+        // Load chat history
+        loadChatHistory(adminId);
+        
+        // Show modal
+        chatModal.classList.add('active');
+        document.getElementById('chatInput').focus();
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeChatModal() {
+        const chatModal = document.getElementById('chatModal');
+        const chatMessages = document.getElementById('chatMessages');
+        
+        chatModal.classList.remove('active');
+        window.currentChat = null;
+        chatMessages.innerHTML = '';
+        document.body.style.overflow = '';
+    }
+    
+    async function loadChatHistory(adminId) {
+        const chatMessages = document.getElementById('chatMessages');
+        
+        try {
+            const response = await fetch(`/api/chats/admin/${adminId}?userId=${window.currentUserId}`);
+            const data = await response.json();
+            
+            if (data.success && data.data.length > 0) {
+                const chat = data.data[0];
+                displayChatMessages(chat.messages);
+            } else {
+                displayWelcomeMessage();
+            }
+        } catch (error) {
+            console.error('Error loading chat history:', error);
+            displayWelcomeMessage();
+        }
+    }
+    
+    function displayChatMessages(messages) {
+        const chatMessages = document.getElementById('chatMessages');
+        chatMessages.innerHTML = '';
+        
+        messages.forEach(message => {
+            const messageElement = createMessageElement(message);
+            chatMessages.appendChild(messageElement);
+        });
+        
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    function displayWelcomeMessage() {
+        const chatMessages = document.getElementById('chatMessages');
+        chatMessages.innerHTML = `
+            <div class="message admin">
+                <div class="message-content">
+                    Hello! I'm ${window.currentChat?.adminName}. How can I help you today?
+                </div>
+                <div class="message-time">${formatTime(new Date())}</div>
+            </div>
+        `;
+    }
+    
+    async function sendChatMessage() {
+        const chatInput = document.getElementById('chatInput');
+        const message = chatInput.value.trim();
+        
+        if (!message || !window.currentChat) return;
+        
+        // Add user message to UI
+        addMessageToUI({
+            sender: 'user',
+            content: message,
+            timestamp: new Date()
+        });
+        
+        chatInput.value = '';
+        
+        try {
+            const response = await fetch('/api/chats', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': window.appData.csrfToken
+                },
+                body: JSON.stringify({
+                    userId: window.currentUserId,
+                    adminId: window.currentChat.adminId,
+                    message: message
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                console.log('Message sent:', data);
+            }
+        } catch (error) {
+            console.error('Error sending message:', error);
+        }
+    }
+    
+    function addMessageToUI(message) {
+        const chatMessages = document.getElementById('chatMessages');
+        const messageElement = createMessageElement(message);
+        chatMessages.appendChild(messageElement);
+        
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    function createMessageElement(message) {
+        const div = document.createElement('div');
+        div.className = `message ${message.sender}`;
+        
+        div.innerHTML = `
+            <div class="message-content">${escapeHtml(message.content)}</div>
+            <div class="message-time">${formatTime(new Date(message.timestamp))}</div>
+        `;
+        
+        return div;
+    }
+    
+    function showErrorState() {
+        const legendsGrid = document.getElementById('legendsGrid');
+        legendsGrid.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Failed to Load Legends</h3>
+                <p>Please try refreshing the page.</p>
+                <button class="cyberpunk-btn btn-sm" onclick="location.reload()" style="margin-top: 1rem;">
+                    <i class="fas fa-redo"></i>
+                    <span>Refresh</span>
+                </button>
+            </div>
+        `;
+    }
+    
+    // Helper functions
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    function getAdminAvatar(adminId) {
+        const avatars = {
+            silverhold: 'https://res.cloudinary.com/dnb0q2s2h/image/upload/v1700000000/silverhold-avatar.jpg',
+            braynofficial: 'https://res.cloudinary.com/dnb0q2s2h/image/upload/v1700000000/brayn-avatar.jpg'
+        };
+        
+        return avatars[adminId] || '/images/default-avatar.png';
+    }
+    
+    function formatTime(date) {
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+    
+    // Initialize global variables if not exists
+    if (!window.currentUserId) {
+        window.currentUserId = localStorage.getItem('userId') || `USER${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
+        localStorage.setItem('userId', window.currentUserId);
+    }
+    
+    if (!window.currentChat) {
+        window.currentChat = null;
+    }
+</script>
