@@ -22,15 +22,24 @@ cloudinary.config({
   api_secret: 'N9U1eFJGKjJ-A8Eo4BTtSCl720c'
 });
 
-// Koneksi MongoDB
-const MONGODB_URI = 'mongodb+srv://braynofficial66_db_user:Oh2ivMc2GGP0SbJF@cluster0.zi2ra3a.mongodb.net/website_db';
+// Koneksi MongoDB BARU
+const MONGODB_URI = 'mongodb+srv://dafanation1313_db_user:Xr6m2tyjgiAlM8x5@cluster0.00ilnna.mongodb.net/source_code_hub?retryWrites=true&w=majority';
 
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
 })
-.then(() => console.log('✅ MongoDB Connected'))
-.catch(err => console.error('❌ MongoDB Connection Error:', err));
+.then(() => {
+  console.log('✅ MongoDB Connected Successfully!');
+  console.log('📊 Database:', mongoose.connection.name);
+  console.log('🔗 Connection ready:', mongoose.connection.readyState === 1 ? 'Yes' : 'No');
+})
+.catch(err => {
+  console.error('❌ MongoDB Connection Error:', err.message);
+  console.error('🔧 Error details:', err);
+});
 
 // Middleware Security
 app.use(helmet({
@@ -58,7 +67,11 @@ app.use(session({
   saveUninitialized: false,
   store: MongoStore.create({
     mongoUrl: MONGODB_URI,
-    ttl: 24 * 60 * 60
+    ttl: 24 * 60 * 60,
+    mongoOptions: {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    }
   }),
   cookie: {
     secure: process.env.NODE_ENV === 'production',
@@ -160,10 +173,32 @@ app.use('/api', apiRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
+  const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+  
   res.status(200).json({ 
-    status: 'OK', 
+    status: 'OK',
+    database: dbStatus,
     timestamp: new Date().toISOString(),
-    uptime: process.uptime()
+    uptime: process.uptime(),
+    memory: process.memoryUsage()
+  });
+});
+
+// Database connection status endpoint
+app.get('/db-status', (req, res) => {
+  const states = {
+    0: 'disconnected',
+    1: 'connected',
+    2: 'connecting',
+    3: 'disconnecting'
+  };
+  
+  res.json({
+    connectionState: states[mongoose.connection.readyState],
+    host: mongoose.connection.host,
+    port: mongoose.connection.port,
+    name: mongoose.connection.name,
+    readyState: mongoose.connection.readyState
   });
 });
 
@@ -189,5 +224,6 @@ if (require.main === module) {
   server.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
     console.log(`🌐 Visit: http://localhost:${PORT}`);
+    console.log(`📊 MongoDB URI: ${MONGODB_URI}`);
   });
 }
