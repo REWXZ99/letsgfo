@@ -1,0 +1,1056 @@
+<%- include('../../layouts/main', { 
+    title: 'Upload Project - Admin Dashboard',
+    headContent: `
+        <style>
+            .upload-section {
+                padding: 2rem 1rem;
+            }
+            
+            .upload-container {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            
+            .upload-header {
+                margin-bottom: 2rem;
+            }
+            
+            .upload-title {
+                font-size: 2rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                color: white;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            
+            .upload-subtitle {
+                color: var(--zinc-500);
+                font-size: 1rem;
+            }
+            
+            .upload-card {
+                background: rgba(10, 10, 10, 0.8);
+                border: 1px solid rgba(255, 0, 0, 0.1);
+                border-radius: var(--radius-2xl);
+                padding: 2.5rem;
+                margin-bottom: 2rem;
+            }
+            
+            .upload-form {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .form-section {
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: white;
+                padding-bottom: 0.75rem;
+                border-bottom: 2px solid rgba(255, 0, 0, 0.2);
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            
+            .section-title i {
+                color: var(--red);
+            }
+            
+            .form-row {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+            
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .form-label {
+                font-size: 0.95rem;
+                font-weight: 500;
+                color: var(--zinc-300);
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .form-label.required::after {
+                content: '*';
+                color: var(--red);
+                margin-left: 0.25rem;
+            }
+            
+            .form-input {
+                padding: 0.875rem 1rem;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                border-radius: var(--radius-xl);
+                color: white;
+                font-family: var(--font-heading);
+                font-size: 0.95rem;
+                transition: all 0.3s ease;
+            }
+            
+            .form-input:focus {
+                outline: none;
+                border-color: var(--red);
+                box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+            }
+            
+            .form-select {
+                padding: 0.875rem 1rem;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                border-radius: var(--radius-xl);
+                color: white;
+                font-family: var(--font-heading);
+                font-size: 0.95rem;
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+            
+            .form-select:focus {
+                outline: none;
+                border-color: var(--red);
+                box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+            }
+            
+            .form-textarea {
+                min-height: 120px;
+                resize: vertical;
+                font-family: var(--font-heading);
+                line-height: 1.5;
+            }
+            
+            .upload-options {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+                margin-top: 1rem;
+            }
+            
+            .upload-option {
+                background: rgba(255, 255, 255, 0.02);
+                border: 2px dashed rgba(255, 0, 0, 0.2);
+                border-radius: var(--radius-xl);
+                padding: 2rem;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 1rem;
+            }
+            
+            .upload-option:hover {
+                border-color: rgba(255, 0, 0, 0.4);
+                background: rgba(255, 0, 0, 0.05);
+            }
+            
+            .upload-option.active {
+                border-color: var(--red);
+                background: rgba(255, 0, 0, 0.1);
+            }
+            
+            .option-icon {
+                width: 64px;
+                height: 64px;
+                border-radius: var(--radius-lg);
+                background: rgba(255, 0, 0, 0.1);
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--red);
+                font-size: 1.5rem;
+            }
+            
+            .option-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: white;
+            }
+            
+            .option-description {
+                color: var(--zinc-500);
+                font-size: 0.9rem;
+                line-height: 1.4;
+            }
+            
+            .code-editor-container {
+                margin-top: 1rem;
+            }
+            
+            .code-editor-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 0.5rem;
+            }
+            
+            .code-language-select {
+                min-width: 150px;
+            }
+            
+            .code-editor {
+                width: 100%;
+                height: 300px;
+                background: #0d1117;
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                border-radius: var(--radius-lg);
+                padding: 1rem;
+                font-family: var(--font-code);
+                font-size: 0.9rem;
+                line-height: 1.5;
+                color: #e6edf3;
+                resize: vertical;
+                tab-size: 4;
+            }
+            
+            .file-upload-container {
+                margin-top: 1rem;
+            }
+            
+            .file-dropzone {
+                border: 2px dashed rgba(255, 0, 0, 0.2);
+                border-radius: var(--radius-xl);
+                padding: 3rem 2rem;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                position: relative;
+            }
+            
+            .file-dropzone:hover {
+                border-color: rgba(255, 0, 0, 0.4);
+                background: rgba(255, 0, 0, 0.05);
+            }
+            
+            .file-dropzone.dragover {
+                border-color: var(--red);
+                background: rgba(255, 0, 0, 0.1);
+            }
+            
+            .dropzone-icon {
+                font-size: 3rem;
+                color: var(--red);
+                margin-bottom: 1rem;
+            }
+            
+            .dropzone-text {
+                margin-bottom: 1rem;
+            }
+            
+            .dropzone-text h4 {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+                color: white;
+            }
+            
+            .dropzone-text p {
+                color: var(--zinc-500);
+                font-size: 0.9rem;
+            }
+            
+            .file-input {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                opacity: 0;
+                cursor: pointer;
+            }
+            
+            .file-preview {
+                margin-top: 1.5rem;
+            }
+            
+            .preview-card {
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid rgba(255, 0, 0, 0.1);
+                border-radius: var(--radius-lg);
+                padding: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .preview-icon {
+                width: 48px;
+                height: 48px;
+                border-radius: var(--radius-md);
+                background: rgba(255, 0, 0, 0.1);
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--red);
+                font-size: 1.25rem;
+            }
+            
+            .preview-info {
+                flex: 1;
+            }
+            
+            .preview-name {
+                font-weight: 500;
+                color: white;
+                margin-bottom: 0.25rem;
+            }
+            
+            .preview-size {
+                color: var(--zinc-500);
+                font-size: 0.85rem;
+            }
+            
+            .preview-remove {
+                background: none;
+                border: none;
+                color: var(--zinc-500);
+                cursor: pointer;
+                padding: 0.5rem;
+                transition: color 0.3s ease;
+            }
+            
+            .preview-remove:hover {
+                color: var(--red);
+            }
+            
+            .tags-input-container {
+                position: relative;
+            }
+            
+            .tags-input {
+                width: 100%;
+                padding: 0.875rem 1rem;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                border-radius: var(--radius-xl);
+                color: white;
+                font-family: var(--font-heading);
+                font-size: 0.95rem;
+            }
+            
+            .tags-hint {
+                font-size: 0.85rem;
+                color: var(--zinc-500);
+                margin-top: 0.5rem;
+            }
+            
+            .form-actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 1rem;
+                margin-top: 2rem;
+                padding-top: 2rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .form-error {
+                background: rgba(239, 68, 68, 0.1);
+                border: 1px solid rgba(239, 68, 68, 0.2);
+                color: #ef4444;
+                padding: 1rem;
+                border-radius: var(--radius-lg);
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+                display: none;
+            }
+            
+            .form-error.show {
+                display: block;
+                animation: slideDown 0.3s ease;
+            }
+            
+            .form-success {
+                background: rgba(34, 197, 94, 0.1);
+                border: 1px solid rgba(34, 197, 94, 0.2);
+                color: #22c55e;
+                padding: 1rem;
+                border-radius: var(--radius-lg);
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+                display: none;
+            }
+            
+            .form-success.show {
+                display: block;
+                animation: slideDown 0.3s ease;
+            }
+            
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            @media (max-width: 768px) {
+                .upload-card {
+                    padding: 1.5rem;
+                }
+                
+                .upload-options {
+                    grid-template-columns: 1fr;
+                }
+                
+                .form-row {
+                    grid-template-columns: 1fr;
+                }
+                
+                .form-actions {
+                    flex-direction: column;
+                }
+                
+                .form-actions button {
+                    width: 100%;
+                }
+            }
+        </style>
+    `
+}) %>
+
+<div class="upload-section">
+    <div class="upload-container">
+        <!-- Header -->
+        <div class="upload-header">
+            <h1 class="upload-title">
+                <i class="fas fa-upload"></i>
+                Upload New Project
+            </h1>
+            <p class="upload-subtitle">
+                Share your amazing work with the community. Upload code or files for others to learn from.
+            </p>
+        </div>
+        
+        <!-- Messages -->
+        <div class="form-error" id="formError"></div>
+        <div class="form-success" id="formSuccess"></div>
+        
+        <!-- Upload Form -->
+        <div class="upload-card">
+            <form id="uploadForm" class="upload-form" enctype="multipart/form-data">
+                <!-- Basic Information Section -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        Basic Information
+                    </h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label required">
+                                <i class="fas fa-heading"></i>
+                                Project Name
+                            </label>
+                            <input type="text" 
+                                   id="projectName" 
+                                   name="name" 
+                                   class="form-input" 
+                                   placeholder="Enter project name"
+                                   required
+                                   maxlength="100">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label required">
+                                <i class="fas fa-code"></i>
+                                Programming Language
+                            </label>
+                            <input type="text" 
+                                   id="projectLanguage" 
+                                   name="language" 
+                                   class="form-input" 
+                                   placeholder="e.g., JavaScript, Python, HTML"
+                                   required
+                                   maxlength="50">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <i class="fas fa-tag"></i>
+                            Project Type
+                        </label>
+                        <div class="upload-options" id="typeOptions">
+                            <div class="upload-option active" data-type="CODE">
+                                <div class="option-icon">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                                <h4 class="option-title">Code</h4>
+                                <p class="option-description">
+                                    Paste your source code directly. Best for scripts, components, or small projects.
+                                </p>
+                            </div>
+                            
+                            <div class="upload-option" data-type="FILE">
+                                <div class="option-icon">
+                                    <i class="fas fa-file"></i>
+                                </div>
+                                <h4 class="option-title">File</h4>
+                                <p class="option-description">
+                                    Upload project files (ZIP, images, documents). Max 50MB per file.
+                                </p>
+                            </div>
+                        </div>
+                        <input type="hidden" id="projectType" name="type" value="CODE">
+                    </div>
+                </div>
+                
+                <!-- Code Editor Section (Visible for CODE type) -->
+                <div class="form-section" id="codeSection">
+                    <h3 class="section-title">
+                        <i class="fas fa-file-code"></i>
+                        Source Code
+                    </h3>
+                    
+                    <div class="form-group">
+                        <div class="code-editor-header">
+                            <label class="form-label required">
+                                <i class="fas fa-code"></i>
+                                Code Content
+                            </label>
+                            <select id="codeLanguageSelect" class="form-select code-language-select">
+                                <option value="javascript">JavaScript</option>
+                                <option value="python">Python</option>
+                                <option value="html">HTML</option>
+                                <option value="css">CSS</option>
+                                <option value="java">Java</option>
+                                <option value="cpp">C++</option>
+                                <option value="php">PHP</option>
+                                <option value="ruby">Ruby</option>
+                                <option value="go">Go</option>
+                                <option value="rust">Rust</option>
+                                <option value="swift">Swift</option>
+                                <option value="kotlin">Kotlin</option>
+                                <option value="typescript">TypeScript</option>
+                            </select>
+                        </div>
+                        
+                        <div class="code-editor-container">
+                            <textarea id="codeContent" 
+                                      name="content" 
+                                      class="code-editor" 
+                                      placeholder="Paste your source code here..."
+                                      required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-sticky-note"></i>
+                                Developer Notes (Optional)
+                            </label>
+                            <textarea id="projectNotes" 
+                                      name="notes" 
+                                      class="form-input form-textarea" 
+                                      placeholder="Add any notes, instructions, or context about your project..."
+                                      maxlength="1000"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- File Upload Section (Visible for FILE type) -->
+                <div class="form-section" id="fileSection" style="display: none;">
+                    <h3 class="section-title">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        File Upload
+                    </h3>
+                    
+                    <div class="form-group">
+                        <div class="file-upload-container">
+                            <div class="file-dropzone" id="fileDropzone">
+                                <div class="dropzone-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <div class="dropzone-text">
+                                    <h4>Drop your file here</h4>
+                                    <p>or click to browse (Max 50MB)</p>
+                                </div>
+                                <input type="file" 
+                                       id="fileInput" 
+                                       name="file" 
+                                       class="file-input" 
+                                       accept="*/*">
+                            </div>
+                            
+                            <div class="file-preview" id="filePreview" style="display: none;">
+                                <div class="preview-card">
+                                    <div class="preview-icon">
+                                        <i class="fas fa-file"></i>
+                                    </div>
+                                    <div class="preview-info">
+                                        <div class="preview-name" id="fileName"></div>
+                                        <div class="preview-size" id="fileSize"></div>
+                                    </div>
+                                    <button type="button" class="preview-remove" id="removeFile">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Additional Information Section -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-plus-circle"></i>
+                        Additional Information
+                    </h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-image"></i>
+                                Preview Image URL (Optional)
+                            </label>
+                            <input type="url" 
+                                   id="previewUrl" 
+                                   name="previewUrl" 
+                                   class="form-input" 
+                                   placeholder="https://example.com/preview.png"
+                                   pattern="https?://.+">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-link"></i>
+                                Live Demo URL (Optional)
+                            </label>
+                            <input type="url" 
+                                   id="demoUrl" 
+                                   name="demoUrl" 
+                                   class="form-input" 
+                                   placeholder="https://example.com/demo"
+                                   pattern="https?://.+">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-tags"></i>
+                            Tags (Optional)
+                        </label>
+                        <div class="tags-input-container">
+                            <input type="text" 
+                                   id="projectTags" 
+                                   name="tags" 
+                                   class="form-input tags-input" 
+                                   placeholder="e.g., react, nodejs, api, tutorial (comma separated)">
+                        </div>
+                        <p class="tags-hint">
+                            Separate tags with commas. Helps others discover your project.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <a href="/admin/dashboard" class="cyberpunk-btn btn-outline">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Cancel</span>
+                    </a>
+                    
+                    <button type="submit" class="cyberpunk-btn" id="submitBtn">
+                        <i class="fas fa-upload"></i>
+                        <span>Upload Project</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM Elements
+        const form = document.getElementById('uploadForm');
+        const typeOptions = document.querySelectorAll('.upload-option');
+        const projectTypeInput = document.getElementById('projectType');
+        const codeSection = document.getElementById('codeSection');
+        const fileSection = document.getElementById('fileSection');
+        const codeLanguageSelect = document.getElementById('codeLanguageSelect');
+        const projectLanguageInput = document.getElementById('projectLanguage');
+        const codeContent = document.getElementById('codeContent');
+        const fileDropzone = document.getElementById('fileDropzone');
+        const fileInput = document.getElementById('fileInput');
+        const filePreview = document.getElementById('filePreview');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const removeFile = document.getElementById('removeFile');
+        const submitBtn = document.getElementById('submitBtn');
+        const formError = document.getElementById('formError');
+        const formSuccess = document.getElementById('formSuccess');
+        
+        // Current state
+        let selectedFile = null;
+        let originalSubmitText = submitBtn.innerHTML;
+        
+        // Initialize
+        setupEventListeners();
+        syncLanguageInput();
+        
+        function setupEventListeners() {
+            // Project type selection
+            typeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const type = this.dataset.type;
+                    selectProjectType(type);
+                });
+            });
+            
+            // Code language sync
+            codeLanguageSelect.addEventListener('change', syncLanguageInput);
+            
+            // File upload handling
+            fileDropzone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect);
+            
+            // Drag and drop
+            fileDropzone.addEventListener('dragover', handleDragOver);
+            fileDropzone.addEventListener('dragleave', handleDragLeave);
+            fileDropzone.addEventListener('drop', handleDrop);
+            
+            // Remove file
+            removeFile.addEventListener('click', clearFile);
+            
+            // Form submission
+            form.addEventListener('submit', handleFormSubmit);
+        }
+        
+        function selectProjectType(type) {
+            // Update active option
+            typeOptions.forEach(option => {
+                if (option.dataset.type === type) {
+                    option.classList.add('active');
+                } else {
+                    option.classList.remove('active');
+                }
+            });
+            
+            // Update hidden input
+            projectTypeInput.value = type;
+            
+            // Show/hide sections
+            if (type === 'CODE') {
+                codeSection.style.display = 'block';
+                fileSection.style.display = 'none';
+                codeContent.required = true;
+                fileInput.required = false;
+            } else {
+                codeSection.style.display = 'none';
+                fileSection.style.display = 'block';
+                codeContent.required = false;
+                fileInput.required = true;
+            }
+        }
+        
+        function syncLanguageInput() {
+            if (projectLanguageInput.value === '') {
+                const selectedLanguage = codeLanguageSelect.options[codeLanguageSelect.selectedIndex].text;
+                projectLanguageInput.value = selectedLanguage;
+            }
+        }
+        
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                processFile(file);
+            }
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            fileDropzone.classList.add('dragover');
+        }
+        
+        function handleDragLeave(e) {
+            e.preventDefault();
+            fileDropzone.classList.remove('dragover');
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            fileDropzone.classList.remove('dragover');
+            
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                processFile(file);
+            }
+        }
+        
+        function processFile(file) {
+            // Check file size (50MB max)
+            const maxSize = 50 * 1024 * 1024; // 50MB
+            if (file.size > maxSize) {
+                showError('File size exceeds 50MB limit');
+                return;
+            }
+            
+            selectedFile = file;
+            
+            // Update preview
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            filePreview.style.display = 'block';
+            
+            // Update file input
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+        }
+        
+        function clearFile() {
+            selectedFile = null;
+            filePreview.style.display = 'none';
+            fileInput.value = '';
+        }
+        
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            // Validate form
+            if (!validateForm()) {
+                return;
+            }
+            
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Uploading...</span>';
+            
+            try {
+                const formData = new FormData(form);
+                
+                // Convert tags string to array
+                const tags = document.getElementById('projectTags').value;
+                if (tags) {
+                    const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+                    formData.set('tags', tagsArray.join(','));
+                }
+                
+                const response = await fetch('/api/admin/projects', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-Token': window.appData.csrfToken
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Success
+                    showSuccess('Project uploaded successfully!');
+                    
+                    // Reset form
+                    setTimeout(() => {
+                        form.reset();
+                        clearFile();
+                        selectProjectType('CODE');
+                        syncLanguageInput();
+                        showSuccess('Redirecting to project...');
+                        
+                        // Redirect to project page
+                        setTimeout(() => {
+                            window.location.href = `/project/${data.data._id}`;
+                        }, 1500);
+                    }, 1000);
+                } else {
+                    // Error
+                    showError(data.message || 'Failed to upload project');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                showError('Network error. Please try again.');
+            } finally {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalSubmitText;
+            }
+        }
+        
+        function validateForm() {
+            const projectType = projectTypeInput.value;
+            const projectName = document.getElementById('projectName').value.trim();
+            const projectLanguage = document.getElementById('projectLanguage').value.trim();
+            
+            // Basic validation
+            if (!projectName) {
+                showError('Project name is required');
+                return false;
+            }
+            
+            if (!projectLanguage) {
+                showError('Programming language is required');
+                return false;
+            }
+            
+            if (projectType === 'CODE') {
+                const code = codeContent.value.trim();
+                if (!code) {
+                    showError('Code content is required for CODE type');
+                    return false;
+                }
+            } else if (projectType === 'FILE') {
+                if (!selectedFile) {
+                    showError('Please select a file to upload');
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        function showError(message) {
+            formError.textContent = message;
+            formError.classList.add('show');
+            formSuccess.classList.remove('show');
+            
+            // Scroll to error
+            formError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                formError.classList.remove('show');
+            }, 5000);
+        }
+        
+        function showSuccess(message) {
+            formSuccess.textContent = message;
+            formSuccess.classList.add('show');
+            formError.classList.remove('show');
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Auto-sync language when typing
+        projectLanguageInput.addEventListener('input', function() {
+            // Only sync if the language input was originally empty or matches the select
+            const selectedOption = codeLanguageSelect.options[codeLanguageSelect.selectedIndex];
+            if (this.value.toLowerCase() === selectedOption.text.toLowerCase()) {
+                return;
+            }
+            
+            // Try to find matching language in select
+            for (let option of codeLanguageSelect.options) {
+                if (option.text.toLowerCase() === this.value.toLowerCase()) {
+                    codeLanguageSelect.value = option.value;
+                    break;
+                }
+            }
+        });
+        
+        // Example code templates
+        const codeTemplates = {
+            javascript: `// JavaScript Example
+function greet(name) {
+    return \`Hello, \${name}!\`;
+}
+
+// Arrow function example
+const multiply = (a, b) => a * b;
+
+// Class example
+class Calculator {
+    add(a, b) {
+        return a + b;
+    }
+}
+
+console.log(greet("World"));
+console.log(multiply(5, 3));`,
+            
+            python: `# Python Example
+def greet(name):
+    return f"Hello, {name}!"
+
+# Lambda function example
+multiply = lambda a, b: a * b
+
+# Class example
+class Calculator:
+    def add(self, a, b):
+        return a + b
+
+print(greet("World"))
+print(multiply(5, 3))`,
+            
+            html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example Project</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: #f0f0f0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hello, World!</h1>
+        <p>This is an example HTML project.</p>
+    </div>
+</body>
+</html>`
+        };
+        
+        // Add template button for empty code editor
+        const codeEditorHeader = codeSection.querySelector('.code-editor-header');
+        const templateButton = document.createElement('button');
+        templateButton.type = 'button';
+        templateButton.className = 'cyberpunk-btn btn-sm';
+        templateButton.innerHTML = '<i class="fas fa-magic"></i><span>Load Template</span>';
+        templateButton.style.marginLeft = 'auto';
+        
+        templateButton.addEventListener('click', function() {
+            const language = codeLanguageSelect.value;
+            if (codeTemplates[language] && !codeContent.value.trim()) {
+                codeContent.value = codeTemplates[language];
+            }
+        });
+        
+        codeEditorHeader.appendChild(templateButton);
+    });
+</script>
