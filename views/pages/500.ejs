@@ -50,7 +50,14 @@
                 font-family: var(--font-code);
                 font-size: 0.9rem;
                 color: var(--zinc-400);
+                display: none;
             }
+            
+            <% if (env === 'development' && error) { %>
+            .error-details {
+                display: block;
+            }
+            <% } %>
             
             .error-actions {
                 display: flex;
@@ -106,7 +113,7 @@
             Something went wrong on our end. Our team has been notified and is working on a fix.
         </p>
         
-        <% if (env === 'development' && error) { %>
+        <% if (typeof env !== 'undefined' && env === 'development' && typeof error !== 'undefined' && error) { %>
             <div class="error-details">
                 <strong>Error Details:</strong>
                 <pre style="margin-top: 0.5rem; overflow-x: auto;"><%= error.stack %></pre>
@@ -125,3 +132,18 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add error logging
+        console.error('500 Error Page Loaded');
+        
+        // Try to get more error details from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorId = urlParams.get('errorId');
+        
+        if (errorId) {
+            console.error('Error ID:', errorId);
+        }
+    });
+</script>
