@@ -55,7 +55,7 @@ const uploadImage = multer({
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
 });
 
-// Middleware for different upload types
+// Export middleware as object
 const uploadMiddleware = {
   avatar: uploadAvatar.single('avatar'),
   file: uploadFile.single('file'),
