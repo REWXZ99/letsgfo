@@ -1,0 +1,185 @@
+<%- include('../layouts/main', { 
+    title: 'Legends - Source Code Hub',
+    headContent: `
+        <style>
+            .legends-section {
+                padding: 4rem 1rem;
+            }
+            
+            .legends-hero {
+                text-align: center;
+                margin-bottom: 4rem;
+            }
+            
+            .legends-title {
+                font-size: clamp(2.5rem, 5vw, 4rem);
+                font-weight: 700;
+                background: linear-gradient(90deg, #fff, var(--red));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                margin-bottom: 1rem;
+            }
+            
+            .legends-subtitle {
+                font-size: 1.2rem;
+                color: var(--zinc-400);
+                max-width: 600px;
+                margin: 0 auto 2rem;
+                line-height: 1.6;
+            }
+            
+            .legends-container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+            
+            .legends-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+                gap: 2rem;
+                margin-bottom: 4rem;
+            }
+            
+            .legend-card {
+                background: rgba(10, 10, 10, 0.8);
+                border: 1px solid rgba(255, 0, 0, 0.1);
+                border-radius: var(--radius-2xl);
+                padding: 2rem;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .legend-card:hover {
+                border-color: rgba(255, 0, 0, 0.3);
+                transform: translateY(-5px);
+                box-shadow: var(--shadow-red);
+            }
+            
+            .legend-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, var(--red), transparent);
+            }
+            
+            .legend-card.owner::before {
+                background: linear-gradient(90deg, gold, transparent);
+            }
+            
+            .legend-header {
+                display: flex;
+                align-items: center;
+                gap: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .legend-avatar {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid var(--red);
+                position: relative;
+            }
+            
+            .legend-avatar.owner {
+                border-color: gold;
+            }
+            
+            .legend-status {
+                position: absolute;
+                bottom: 5px;
+                right: 5px;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                border: 3px solid var(--black);
+            }
+            
+            .status-online {
+                background: #10b981;
+            }
+            
+            .status-offline {
+                background: var(--zinc-600);
+            }
+            
+            .legend-info {
+                flex: 1;
+            }
+            
+            .legend-name {
+                font-size: 1.5rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .legend-role {
+                display: inline-block;
+                padding: 0.25rem 1rem;
+                background: rgba(255, 0, 0, 0.1);
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                border-radius: var(--radius-3xl);
+                font-size: 0.9rem;
+                color: var(--red);
+                font-weight: 500;
+            }
+            
+            .legend-role.owner {
+                background: rgba(255, 215, 0, 0.1);
+                border-color: rgba(255, 215, 0, 0.2);
+                color: gold;
+            }
+            
+            .legend-quote {
+                font-style: italic;
+                color: var(--zinc-400);
+                margin-bottom: 1.5rem;
+                padding-left: 1rem;
+                border-left: 2px solid rgba(255, 0, 0, 0.3);
+                line-height: 1.5;
+            }
+            
+            .legend-hashtags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .hashtag {
+                padding: 0.5rem 1rem;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: var(--radius-3xl);
+                font-size: 0.85rem;
+                color: var(--zinc-400);
+                font-family: var(--font-code);
+            }
+            
+            .legend-stats {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+                padding: 1rem;
+                background: rgba(0, 0, 0, 0.3);
+                border-radius: var(--radius-xl);
+            }
+            
+            .legend-stat {
+                text-align: center;
+            }
+            
+            .legend-stat-value {
+                display: block;
+                font-size: 1.25rem;
+                font-weight: 
