@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" class="cyberpunk-theme">
+<head>
+    <%- include('../partials/head', { 
+        title: title,
+        headContent: headContent,
+        csrfToken: csrfToken 
+    }) %>
+</head>
+<body>
+    <!-- Cyberpunk Scan Lines Overlay -->
+    <div class="scan-lines"></div>
+    
+    <!-- Red Grid Overlay -->
+    <div class="grid-overlay"></div>
+    
+    <!-- Main Container -->
+    <div class="cyberpunk-container">
+        <!-- Header -->
+        <%- include('../partials/header', {
+            currentPath: currentPath,
+            isAuthenticated: isAuthenticated,
+            admin: admin,
+            csrfToken: csrfToken
+        }) %>
+        
+        <!-- Main Content -->
+        <main class="cyberpunk-main">
+            <!-- Flash Messages -->
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <%= messages.success %>
+                    <button class="alert-close">&times;</button>
+                </div>
+            <% } %>
+            
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <%= messages.error %>
+                    <button class="alert-close">&times;</button>
+                </div>
+            <% } %>
+            
+            <% if (messages && messages.info) { %>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <%= messages.info %>
+                    <button class="alert-close">&times;</button>
+                </div>
+            <% } %>
+            
+            <!-- Page Content -->
+            <%- body %>
+        </main>
+        
+        <!-- Footer -->
+        <%- include('../partials/footer') %>
+    </div>
+    
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav" id="bottomNav">
+        <a href="/" class="bottom-nav-link <%= currentPath === '/' ? 'active' : '' %>">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        
+        <a href="/legends" class="bottom-nav-link <%= currentPath === '/legends' ? 'active' : '' %>">
+            <i class="fas fa-crown"></i>
+            <span>Legends</span>
+        </a>
+        
+        <div class="bottom-nav-center">
+            <button class="bottom-nav-upload" id="mobileUploadBtn" aria-label="Upload project">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+        
+        <a href="/#chat" class="bottom-nav-link">
+            <i class="fas fa-comments"></i>
+            <span>Chat</span>
+        </a>
+        
+        <% if (isAuthenticated) { %>
+            <a href="/admin/dashboard" class="bottom-nav-link">
+                <i class="fas fa-terminal"></i>
+                <span>Admin</span>
+            </a>
+        <% } else { %>
+            <a href="/admin/login" class="bottom-nav-link">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Login</span>
+            </a>
+        <% } %>
+    </nav>
+    
+    <!-- Socket.IO Connection Status -->
+    <div class="connection-status" id="connectionStatus">
+        <div class="status-dot"></div>
+        <span class="status-text">Connecting...</span>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="cyberpunk-loader">
+            <div class="loader-grid">
+                <div class="loader-cell"></div>
+                <div class="loader-cell"></div>
+                <div class="loader-cell"></div>
+                <div class="loader-cell"></div>
+                <div class="loader-cell"></div>
+                <div class="loader-cell"></div>
+                <div class="loader-cell"></div>
+                <div class="loader-cell"></div>
+                <div class="loader-cell"></div>
+            </div>
+            <div class="loader-text">INITIALIZING SYSTEM</div>
+            <div class="loader-progress">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script>
+        // Global variables for EJS data
+        window.appData = {
+            isAuthenticated: <%= isAuthenticated ? 'true' : 'false' %>,
+            admin: <%- JSON.stringify(admin || {}) %>,
+            currentPath: '<%= currentPath %>',
+            csrfToken: '<%= csrfToken || "" %>',
+            socketConnected: false
+        };
+    </script>
+</body>
+</html>
