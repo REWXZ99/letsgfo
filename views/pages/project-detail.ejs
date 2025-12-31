@@ -1,0 +1,857 @@
+<%- include('../layouts/main', { 
+    title: 'Project Details',
+    headContent: `
+        <style>
+            .project-detail-section {
+                padding: 2rem 1rem;
+            }
+            
+            .project-detail-container {
+                max-width: 1000px;
+                margin: 0 auto;
+            }
+            
+            .project-back-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: var(--zinc-500);
+                text-decoration: none;
+                margin-bottom: 2rem;
+                transition: color 0.3s ease;
+            }
+            
+            .project-back-link:hover {
+                color: var(--red);
+            }
+            
+            .project-header {
+                margin-bottom: 3rem;
+            }
+            
+            .project-title-main {
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin-bottom: 1rem;
+                background: linear-gradient(90deg, #fff, var(--red));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            
+            .project-meta {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1.5rem;
+                align-items: center;
+                margin-bottom: 1.5rem;
+            }
+            
+            .project-author-info {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            
+            .author-avatar-large {
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid rgba(255, 0, 0, 0.3);
+            }
+            
+            .author-details h4 {
+                font-size: 1rem;
+                margin-bottom: 0.25rem;
+            }
+            
+            .author-role {
+                font-size: 0.85rem;
+                color: var(--zinc-500);
+            }
+            
+            .project-stats-large {
+                display: flex;
+                gap: 2rem;
+            }
+            
+            .project-stat-large {
+                text-align: center;
+            }
+            
+            .stat-icon {
+                font-size: 1.5rem;
+                color: var(--red);
+                margin-bottom: 0.5rem;
+            }
+            
+            .stat-number-large {
+                display: block;
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: white;
+                font-family: var(--font-code);
+            }
+            
+            .stat-label-large {
+                font-size: 0.85rem;
+                color: var(--zinc-500);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            
+            .project-content {
+                background: rgba(10, 10, 10, 0.8);
+                border: 1px solid rgba(255, 0, 0, 0.1);
+                border-radius: var(--radius-2xl);
+                padding: 2rem;
+                margin-bottom: 2rem;
+            }
+            
+            .content-section {
+                margin-bottom: 2rem;
+            }
+            
+            .section-heading {
+                font-size: 1.25rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 2px solid rgba(255, 0, 0, 0.2);
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            
+            .section-heading i {
+                color: var(--red);
+            }
+            
+            .code-container {
+                background: #0d1117;
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                border-radius: var(--radius-xl);
+                overflow: hidden;
+                margin: 1rem 0;
+            }
+            
+            .code-header {
+                background: rgba(255, 0, 0, 0.1);
+                padding: 0.75rem 1rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid rgba(255, 0, 0, 0.2);
+            }
+            
+            .code-language {
+                font-family: var(--font-code);
+                font-size: 0.9rem;
+                color: var(--red);
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .copy-code-btn {
+                background: rgba(255, 0, 0, 0.1);
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                border-radius: var(--radius-lg);
+                color: var(--zinc-400);
+                padding: 0.5rem 1rem;
+                font-family: var(--font-code);
+                font-size: 0.85rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            
+            .copy-code-btn:hover {
+                background: rgba(255, 0, 0, 0.2);
+                color: white;
+            }
+            
+            .code-content {
+                padding: 1.5rem;
+                overflow-x: auto;
+                font-family: var(--font-code);
+                font-size: 0.9rem;
+                line-height: 1.5;
+                color: #e6edf3;
+                max-height: 500px;
+            }
+            
+            .preview-container {
+                margin: 1rem 0;
+            }
+            
+            .preview-image {
+                width: 100%;
+                max-height: 400px;
+                object-fit: contain;
+                border-radius: var(--radius-lg);
+                border: 1px solid rgba(255, 0, 0, 0.1);
+            }
+            
+            .preview-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1.5rem;
+                background: rgba(255, 0, 0, 0.1);
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                border-radius: var(--radius-3xl);
+                color: var(--red);
+                text-decoration: none;
+                font-weight: 500;
+                transition: all 0.3s ease;
+            }
+            
+            .preview-link:hover {
+                background: rgba(255, 0, 0, 0.2);
+                transform: translateY(-2px);
+            }
+            
+            .notes-container {
+                background: rgba(255, 0, 0, 0.05);
+                border: 1px solid rgba(255, 0, 0, 0.1);
+                border-radius: var(--radius-xl);
+                padding: 1.5rem;
+                margin: 1rem 0;
+                line-height: 1.6;
+            }
+            
+            .project-actions {
+                display: flex;
+                gap: 1rem;
+                margin-top: 2rem;
+                flex-wrap: wrap;
+            }
+            
+            .action-btn {
+                flex: 1;
+                min-width: 200px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.75rem;
+                padding: 1rem 2rem;
+                font-size: 1rem;
+                font-weight: 600;
+            }
+            
+            .action-btn.like-btn {
+                background: rgba(255, 0, 0, 0.1);
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                color: var(--red);
+            }
+            
+            .action-btn.like-btn:hover {
+                background: rgba(255, 0, 0, 0.2);
+            }
+            
+            .action-btn.like-btn.liked {
+                background: var(--red);
+                color: white;
+            }
+            
+            .tags-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                margin-top: 2rem;
+            }
+            
+            .tag {
+                padding: 0.5rem 1rem;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: var(--radius-3xl);
+                font-size: 0.85rem;
+                color: var(--zinc-400);
+            }
+            
+            .project-footer {
+                margin-top: 3rem;
+                padding-top: 2rem;
+                border-top: 1px solid rgba(255, 0, 0, 0.1);
+            }
+            
+            .related-projects {
+                margin-top: 2rem;
+            }
+            
+            .related-projects-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 1.5rem;
+                margin-top: 1.5rem;
+            }
+            
+            .related-project-card {
+                background: rgba(10, 10, 10, 0.8);
+                border: 1px solid rgba(255, 0, 0, 0.1);
+                border-radius: var(--radius-xl);
+                padding: 1.5rem;
+                transition: all 0.3s ease;
+                text-decoration: none;
+                color: inherit;
+                display: block;
+            }
+            
+            .related-project-card:hover {
+                border-color: rgba(255, 0, 0, 0.3);
+                transform: translateY(-5px);
+            }
+            
+            .related-project-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+            }
+            
+            .related-project-language {
+                display: inline-block;
+                padding: 0.25rem 0.75rem;
+                background: rgba(255, 0, 0, 0.1);
+                border: 1px solid rgba(255, 0, 0, 0.2);
+                border-radius: 1rem;
+                font-size: 0.85rem;
+                font-family: var(--font-code);
+                color: var(--red);
+            }
+            
+            @media (max-width: 768px) {
+                .project-title-main {
+                    font-size: 2rem;
+                }
+                
+                .project-meta {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 1rem;
+                }
+                
+                .project-stats-large {
+                    width: 100%;
+                    justify-content: space-between;
+                }
+                
+                .action-btn {
+                    min-width: 100%;
+                }
+            }
+        </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/javascript.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/html.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/css.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/cpp.min.js"></script>
+    `
+}) %>
+
+<div class="project-detail-section">
+    <div class="project-detail-container">
+        <!-- Back Link -->
+        <a href="/" class="project-back-link">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Projects</span>
+        </a>
+        
+        <!-- Project Header -->
+        <div class="project-header">
+            <h1 class="project-title-main" id="projectTitle">Loading...</h1>
+            
+            <div class="project-meta">
+                <div class="project-author-info">
+                    <img id="authorAvatar" src="/images/default-avatar.png" alt="Author" class="author-avatar-large">
+                    <div class="author-details">
+                        <h4 id="authorName">Loading...</h4>
+                        <span class="author-role" id="authorRole">Admin</span>
+                    </div>
+                </div>
+                
+                <div class="project-stats-large">
+                    <div class="project-stat-large">
+                        <div class="stat-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <span class="stat-number-large" id="projectLikes">0</span>
+                        <span class="stat-label-large">Likes</span>
+                    </div>
+                    
+                    <div class="project-stat-large">
+                        <div class="stat-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <span class="stat-number-large" id="projectDownloads">0</span>
+                        <span class="stat-label-large">Downloads</span>
+                    </div>
+                    
+                    <div class="project-stat-large">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <span class="stat-number-large" id="projectDate">--</span>
+                        <span class="stat-label-large">Created</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="project-language-badge">
+                <span class="project-language" id="projectLanguage">Loading...</span>
+                <span class="project-type" id="projectType">CODE</span>
+            </div>
+        </div>
+        
+        <!-- Project Content -->
+        <div class="project-content">
+            <!-- Code Section -->
+            <div class="content-section" id="codeSection" style="display: none;">
+                <h3 class="section-heading">
+                    <i class="fas fa-code"></i>
+                    Source Code
+                </h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <div class="code-language">
+                            <i class="fas fa-file-code"></i>
+                            <span id="codeLanguageLabel">JavaScript</span>
+                        </div>
+                        <button class="copy-code-btn" id="copyCodeBtn">
+                            <i class="fas fa-copy"></i>
+                            Copy Code
+                        </button>
+                    </div>
+                    <pre class="code-content"><code id="codeContent" class="hljs"></code></pre>
+                </div>
+            </div>
+            
+            <!-- File Preview Section -->
+            <div class="content-section" id="fileSection" style="display: none;">
+                <h3 class="section-heading">
+                    <i class="fas fa-file"></i>
+                    File Preview
+                </h3>
+                <div class="preview-container" id="filePreviewContainer">
+                    <!-- File preview will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Developer Notes -->
+            <div class="content-section" id="notesSection" style="display: none;">
+                <h3 class="section-heading">
+                    <i class="fas fa-sticky-note"></i>
+                    Developer Notes
+                </h3>
+                <div class="notes-container" id="projectNotes">
+                    Loading notes...
+                </div>
+            </div>
+            
+            <!-- Preview Link/Demo -->
+            <div class="content-section" id="previewSection" style="display: none;">
+                <h3 class="section-heading">
+                    <i class="fas fa-external-link-alt"></i>
+                    Live Preview
+                </h3>
+                <a href="#" target="_blank" rel="noopener noreferrer" class="preview-link" id="previewLink">
+                    <i class="fas fa-external-link-alt"></i>
+                    <span>View Live Demo</span>
+                </a>
+            </div>
+            
+            <!-- Tags -->
+            <div class="content-section" id="tagsSection" style="display: none;">
+                <h3 class="section-heading">
+                    <i class="fas fa-tags"></i>
+                    Tags
+                </h3>
+                <div class="tags-container" id="projectTags">
+                    <!-- Tags will be loaded here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Project Actions -->
+        <div class="project-actions">
+            <button class="cyberpunk-btn action-btn like-btn" id="likeBtn">
+                <i class="fas fa-heart"></i>
+                <span>Like Project</span>
+                <span class="like-count" id="likeCount">0</span>
+            </button>
+            
+            <button class="cyberpunk-btn action-btn" id="downloadBtn">
+                <i class="fas fa-download"></i>
+                <span>Download</span>
+                <span class="download-count" id="downloadCount">0</span>
+            </button>
+            
+            <% if (isAuthenticated && admin && admin._id === projectData?.authorId?._id) { %>
+                <a href="/admin/projects/edit/<%= projectData._id %>" class="cyberpunk-btn action-btn btn-outline">
+                    <i class="fas fa-edit"></i>
+                    <span>Edit Project</span>
+                </a>
+            <% } %>
+        </div>
+        
+        <!-- Related Projects -->
+        <div class="project-footer">
+            <h3 class="section-heading">
+                <i class="fas fa-project-diagram"></i>
+                Related Projects
+            </h3>
+            <div class="related-projects">
+                <div class="related-projects-grid" id="relatedProjects">
+                    <!-- Related projects will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const projectId = '<%= projectId %>';
+        loadProjectDetails(projectId);
+        setupProjectInteractions();
+    });
+    
+    async function loadProjectDetails(projectId) {
+        try {
+            const response = await fetch(`/api/projects/${projectId}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                displayProjectDetails(data.data);
+                loadRelatedProjects(data.data.language, data.data._id);
+            } else {
+                showAlert('error', 'Project not found');
+                setTimeout(() => window.location.href = '/', 2000);
+            }
+        } catch (error) {
+            console.error('Error loading project details:', error);
+            showAlert('error', 'Failed to load project details');
+        }
+    }
+    
+    function displayProjectDetails(project) {
+        // Update basic info
+        document.getElementById('projectTitle').textContent = project.name;
+        document.getElementById('projectLanguage').textContent = project.language;
+        document.getElementById('projectType').textContent = project.type;
+        document.getElementById('projectLikes').textContent = project.likes;
+        document.getElementById('projectDownloads').textContent = project.downloads;
+        document.getElementById('likeCount').textContent = project.likes;
+        document.getElementById('downloadCount').textContent = project.downloads;
+        document.getElementById('projectDate').textContent = formatDate(project.createdAt);
+        
+        // Update author info
+        if (project.authorId) {
+            document.getElementById('authorAvatar').src = project.authorId.photoUrl || '/images/default-avatar.png';
+            document.getElementById('authorName').textContent = project.authorId.name;
+            document.getElementById('authorRole').textContent = project.authorId.role;
+        }
+        
+        // Show/hide sections based on project type
+        if (project.type === 'CODE') {
+            document.getElementById('codeSection').style.display = 'block';
+            document.getElementById('codeLanguageLabel').textContent = project.language;
+            document.getElementById('codeContent').textContent = project.content;
+            
+            // Apply syntax highlighting
+            const codeElement = document.getElementById('codeContent');
+            const language = project.language.toLowerCase();
+            codeElement.className = `hljs language-${language}`;
+            hljs.highlightElement(codeElement);
+        } else {
+            document.getElementById('fileSection').style.display = 'block';
+            displayFilePreview(project);
+        }
+        
+        // Show notes if available
+        if (project.notes) {
+            document.getElementById('notesSection').style.display = 'block';
+            document.getElementById('projectNotes').textContent = project.notes;
+        }
+        
+        // Show preview link if available
+        if (project.previewUrl) {
+            document.getElementById('previewSection').style.display = 'block';
+            const previewLink = document.getElementById('previewLink');
+            previewLink.href = project.previewUrl;
+            previewLink.querySelector('span').textContent = project.previewUrl.includes('github') 
+                ? 'View on GitHub' 
+                : 'View Live Demo';
+        }
+        
+        // Show tags if available
+        if (project.tags && project.tags.length > 0) {
+            document.getElementById('tagsSection').style.display = 'block';
+            const tagsContainer = document.getElementById('projectTags');
+            project.tags.forEach(tag => {
+                const tagElement = document.createElement('span');
+                tagElement.className = 'tag';
+                tagElement.textContent = tag;
+                tagsContainer.appendChild(tagElement);
+            });
+        }
+    }
+    
+    function displayFilePreview(project) {
+        const container = document.getElementById('filePreviewContainer');
+        
+        if (project.fileUrl) {
+            const fileExtension = project.fileUrl.split('.').pop().toLowerCase();
+            
+            if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(fileExtension)) {
+                // Image preview
+                container.innerHTML = `
+                    <img src="${project.fileUrl}" alt="${project.name}" class="preview-image">
+                    <div style="margin-top: 1rem;">
+                        <a href="${project.fileUrl}" target="_blank" class="preview-link">
+                            <i class="fas fa-expand"></i>
+                            <span>View Full Image</span>
+                        </a>
+                    </div>
+                `;
+            } else if (['pdf'].includes(fileExtension)) {
+                // PDF preview
+                container.innerHTML = `
+                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: var(--radius-lg); text-align: center;">
+                        <i class="fas fa-file-pdf" style="font-size: 3rem; color: var(--red); margin-bottom: 1rem;"></i>
+                        <p style="margin-bottom: 1rem; color: var(--zinc-400);">PDF Document</p>
+                        <a href="${project.fileUrl}" target="_blank" class="preview-link">
+                            <i class="fas fa-download"></i>
+                            <span>Download PDF</span>
+                        </a>
+                    </div>
+                `;
+            } else {
+                // Generic file preview
+                container.innerHTML = `
+                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: var(--radius-lg); text-align: center;">
+                        <i class="fas fa-file" style="font-size: 3rem; color: var(--red); margin-bottom: 1rem;"></i>
+                        <p style="margin-bottom: 1rem; color: var(--zinc-400);">${fileExtension.toUpperCase()} File</p>
+                        <a href="${project.fileUrl}" target="_blank" class="preview-link">
+                            <i class="fas fa-download"></i>
+                            <span>Download File</span>
+                        </a>
+                    </div>
+                `;
+            }
+        }
+    }
+    
+    async function loadRelatedProjects(language, excludeId) {
+        try {
+            const response = await fetch(`/api/projects?language=${encodeURIComponent(language)}&limit=3`);
+            const data = await response.json();
+            
+            if (data.success) {
+                displayRelatedProjects(data.data.filter(p => p._id !== excludeId));
+            }
+        } catch (error) {
+            console.error('Error loading related projects:', error);
+        }
+    }
+    
+    function displayRelatedProjects(projects) {
+        const container = document.getElementById('relatedProjects');
+        
+        if (projects.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--zinc-500);">
+                    <i class="fas fa-code-branch" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                    <p>No related projects found</p>
+                </div>
+            `;
+            return;
+        }
+        
+        projects.forEach(project => {
+            const languageColor = getLanguageColor(project.language);
+            
+            const projectCard = document.createElement('a');
+            projectCard.href = `/project/${project._id}`;
+            projectCard.className = 'related-project-card';
+            
+            projectCard.innerHTML = `
+                <h4 class="related-project-title">${escapeHtml(project.name)}</h4>
+                <span class="related-project-language" style="background: ${languageColor}20; border-color: ${languageColor}40; color: ${languageColor}">
+                    ${escapeHtml(project.language)}
+                </span>
+                <div style="margin-top: 1rem; display: flex; gap: 1rem; font-size: 0.85rem; color: var(--zinc-500);">
+                    <span><i class="fas fa-heart"></i> ${project.likes}</span>
+                    <span><i class="fas fa-download"></i> ${project.downloads}</span>
+                </div>
+            `;
+            
+            container.appendChild(projectCard);
+        });
+    }
+    
+    function setupProjectInteractions() {
+        // Copy code button
+        const copyCodeBtn = document.getElementById('copyCodeBtn');
+        if (copyCodeBtn) {
+            copyCodeBtn.addEventListener('click', async function() {
+                const codeContent = document.getElementById('codeContent').textContent;
+                
+                try {
+                    await navigator.clipboard.writeText(codeContent);
+                    
+                    const originalHTML = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    this.style.background = 'rgba(34, 197, 94, 0.2)';
+                    this.style.borderColor = 'rgba(34, 197, 94, 0.3)';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalHTML;
+                        this.style.background = '';
+                        this.style.borderColor = '';
+                    }, 2000);
+                } catch (error) {
+                    console.error('Failed to copy code:', error);
+                    showAlert('error', 'Failed to copy code');
+                }
+            });
+        }
+        
+        // Like button
+        const likeBtn = document.getElementById('likeBtn');
+        if (likeBtn) {
+            likeBtn.addEventListener('click', async function() {
+                const projectId = '<%= projectId %>';
+                await likeProject(projectId, this);
+            });
+        }
+        
+        // Download button
+        const downloadBtn = document.getElementById('downloadBtn');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', async function() {
+                const projectId = '<%= projectId %>';
+                await downloadProject(projectId, this);
+            });
+        }
+    }
+    
+    async function likeProject(projectId, button) {
+        try {
+            const response = await fetch(`/api/projects/${projectId}/like`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-Token': window.appData.csrfToken
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Update UI
+                document.getElementById('projectLikes').textContent = data.likes;
+                document.getElementById('likeCount').textContent = data.likes;
+                
+                // Visual feedback
+                button.classList.add('liked');
+                button.innerHTML = '<i class="fas fa-heart"></i><span>Liked!</span>';
+                button.disabled = true;
+                
+                // Emit socket event
+                if (window.socket) {
+                    window.socket.emit('project-liked', projectId);
+                }
+            }
+        } catch (error) {
+            console.error('Like error:', error);
+            showAlert('error', 'Failed to like project');
+        }
+    }
+    
+    async function downloadProject(projectId, button) {
+        try {
+            const response = await fetch(`/api/projects/${projectId}/download`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-Token': window.appData.csrfToken
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Update UI
+                document.getElementById('projectDownloads').textContent = data.downloads;
+                document.getElementById('downloadCount').textContent = data.downloads;
+                
+                // Initiate download
+                if (data.downloadUrl) {
+                    window.open(data.downloadUrl, '_blank');
+                } else {
+                    window.open(`/api/projects/${projectId}/download-file`, '_blank');
+                }
+                
+                // Visual feedback
+                const originalHTML = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i><span>Downloaded!</span>';
+                button.disabled = true;
+                
+                setTimeout(() => {
+                    button.innerHTML = originalHTML;
+                    button.disabled = false;
+                }, 2000);
+            }
+        } catch (error) {
+            console.error('Download error:', error);
+            showAlert('error', 'Failed to download project');
+        }
+    }
+    
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    }
+    
+    // Helper functions from main.js
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    function getLanguageColor(language) {
+        const colors = {
+            javascript: '#F7DF1E',
+            typescript: '#3178C6',
+            python: '#3776AB',
+            java: '#007396',
+            cpp: '#00599C',
+            csharp: '#239120',
+            php: '#777BB4',
+            ruby: '#CC342D',
+            go: '#00ADD8',
+            rust: '#000000',
+            swift: '#FA7343',
+            kotlin: '#7F52FF',
+            html: '#E34F26',
+            css: '#1572B6',
+            vue: '#4FC08D',
+            react: '#61DAFB',
+            angular: '#DD0031',
+            nodejs: '#339933',
+            django: '#092E20',
+            flask: '#000000',
+            laravel: '#FF2D20'
+        };
+        
+        return colors[language.toLowerCase()] || '#6B7280';
+    }
+</script>
