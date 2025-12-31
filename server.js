@@ -22,27 +22,25 @@ cloudinary.config({
   api_secret: 'N9U1eFJGKjJ-A8Eo4BTtSCl720c'
 });
 
-// Koneksi MongoDB BARU
+// Koneksi MongoDB
 const MONGODB_URI = 'mongodb+srv://dafanation1313_db_user:Xr6m2tyjgiAlM8x5@cluster0.00ilnna.mongodb.net/source_code_hub?retryWrites=true&w=majority';
 
-// Connect to MongoDB dengan timeout lebih lama untuk Vercel
+// Connect to MongoDB
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 10000, // 10 seconds
+  serverSelectionTimeoutMS: 10000,
   socketTimeoutMS: 45000,
 })
 .then(() => {
   console.log('✅ MongoDB Connected Successfully!');
   console.log('📊 Database:', mongoose.connection.name || 'source_code_hub');
-  console.log('🔗 Connection state:', mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected');
   
   // Initialize database
   initializeDatabase();
 })
 .catch(err => {
   console.error('❌ MongoDB Connection Error:', err.message);
-  console.error('🔧 Error details:', err);
 });
 
 // Function to initialize database
@@ -58,6 +56,23 @@ const initializeDatabase = async () => {
     console.error('❌ Database initialization error:', error.message);
   }
 };
+
+// Middleware untuk set default template variables
+app.use((req, res, next) => {
+  // Set default values untuk EJS
+  res.locals.currentPath = req.path;
+  res.locals.isAuthenticated = req.session.isAuthenticated || false;
+  res.locals.admin = req.session.admin || null;
+  res.locals.csrfToken = req.session.csrfToken || '';
+  res.locals.messages = req.session.messages || null;
+  
+  // Clear messages setelah dipakai
+  if (req.session.messages) {
+    delete req.session.messages;
+  }
+  
+  next();
+});
 
 // Middleware Security
 app.use(helmet({
@@ -115,19 +130,12 @@ app.use(session({
 // Set EJS as template engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+// Serve static files
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: '1y',
   etag: true
 }));
-
-// Global variables for EJS
-app.use((req, res, next) => {
-  res.locals.currentPath = req.path;
-  res.locals.isAuthenticated = req.session.isAuthenticated || false;
-  res.locals.admin = req.session.admin || null;
-  res.locals.csrfToken = req.session.csrfToken || '';
-  next();
-});
 
 // Create HTTP server for Socket.IO
 const server = http.createServer(app);
@@ -146,103 +154,100 @@ io.on('connection', (socket) => {
   
   socket.on('join-chat', (userId) => {
     socket.join(userId);
-    console.log(`💬 User ${userId} joined chat room`);
   });
   
   socket.on('send-message', (data) => {
-    console.log(`📨 Message from ${data.sender} to room ${data.room}`);
     io.to(data.room).emit('receive-message', data);
   });
   
   socket.on('like-project', (projectId) => {
-    console.log(`❤️ Project ${projectId} liked`);
     io.emit('project-liked', { projectId, timestamp: new Date() });
   });
   
   socket.on('disconnect', () => {
     console.log('🔌 User disconnected:', socket.id);
   });
-  
-  socket.on('error', (error) => {
-    console.error('❌ Socket.IO error:', error);
-  });
 });
 
-// Attach io to app for use in routes
+// Attach io to app
 app.set('io', io);
-app.set('socketio', io);
 
-// Basic Routes
+// ==================== BASIC ROUTES ====================
+
+// Home page
 app.get('/', (req, res) => {
   res.render('pages/home', {
-    title: 'Source Code Hub - Futuristic Code Sharing Platform',
-    headContent: ''
+    title: 'Source Code Hub - Futuristic Code Sharing Platform'
   });
 });
 
+// Project detail page
 app.get('/project/:id', (req, res) => {
   res.render('pages/project-detail', { 
-    projectId: req.params.id,
     title: 'Project Details',
-    headContent: ''
+    projectId: req.params.id
   });
 });
 
+// Legends page
 app.get('/legends', (req, res) => {
   res.render('pages/legends', {
-    title: 'Legends - Source Code Hub',
-    headContent: ''
+    title: 'Legends - Source Code Hub'
   });
 });
 
-// Admin Routes (Pages)
+// ==================== ADMIN PAGES ====================
+
+// Admin login page
 app.get('/admin/login', (req, res) => {
   if (req.session.isAuthenticated) {
     return res.redirect('/admin/dashboard');
   }
   res.render('pages/admin/login', {
-    title: 'Admin Login - Source Code Hub',
-    headContent: ''
+    title: 'Admin Login - Source Code Hub'
   });
 });
 
+// Admin dashboard
 app.get('/admin/dashboard', (req, res) => {
   if (!req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
   res.render('pages/admin/dashboard', {
-    title: 'Admin Dashboard - Source Code Hub',
-    headContent: ''
+    title: 'Admin Dashboard - Source Code Hub'
   });
 });
 
+// Upload project page
 app.get('/admin/projects/upload', (req, res) => {
   if (!req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
   res.render('pages/admin/project-upload', {
-    title: 'Upload Project - Admin Dashboard',
-    headContent: ''
+    title: 'Upload Project - Admin Dashboard'
   });
 });
 
+// Edit profile page
 app.get('/admin/profile', (req, res) => {
   if (!req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
   res.render('pages/admin/profile', {
-    title: 'Edit Profile - Admin Dashboard',
-    headContent: ''
+    title: 'Edit Profile - Admin Dashboard'
   });
 });
 
-// API Routes
+// ==================== API ROUTES ====================
+
+// Try to load API routes, fallback if error
 try {
   const apiRoutes = require('./routes/api');
   app.use('/api', apiRoutes);
   console.log('✅ API Routes loaded successfully');
 } catch (error) {
-  console.error('❌ Failed to load API routes:', error);
+  console.error('❌ Failed to load API routes:', error.message);
+  
   // Fallback basic API routes
   app.get('/api/health', (req, res) => {
     const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
@@ -250,7 +255,8 @@ try {
       status: 'OK',
       database: dbStatus,
       timestamp: new Date().toISOString(),
-      uptime: process.uptime()
+      uptime: process.uptime(),
+      version: '1.0.0'
     });
   });
   
@@ -265,36 +271,80 @@ try {
     res.json({
       connectionState: states[mongoose.connection.readyState],
       readyState: mongoose.connection.readyState,
-      name: mongoose.connection.name || 'source_code_hub'
+      name: mongoose.connection.name || 'source_code_hub',
+      host: mongoose.connection.host,
+      models: Object.keys(mongoose.connection.models)
+    });
+  });
+  
+  app.get('/api/stats', (req, res) => {
+    res.json({
+      success: true,
+      data: {
+        totalProjects: 0,
+        totalLikes: 0,
+        totalDownloads: 0,
+        popularLanguages: []
+      }
     });
   });
 }
+
+// ==================== FAVICON & STATIC ====================
 
 // Serve favicon
 app.get('/favicon.ico', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'images', 'favicon.ico'));
 });
 
-// Error handling - 404
+// Serve robots.txt
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain');
+  res.send('User-agent: *\nAllow: /\nSitemap: https://' + req.get('host') + '/sitemap.xml');
+});
+
+// Serve sitemap.xml
+app.get('/sitemap.xml', (req, res) => {
+  res.type('application/xml');
+  const baseUrl = 'https://' + req.get('host');
+  res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${baseUrl}/</loc>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/legends</loc>
+    <priority>0.8</priority>
+  </url>
+</urlset>`);
+});
+
+// ==================== ERROR HANDLING ====================
+
+// 404 - Page Not Found
 app.use((req, res, next) => {
   res.status(404).render('pages/404', {
-    title: '404 - Page Not Found',
-    headContent: ''
+    title: '404 - Page Not Found'
   });
 });
 
-// Error handling - 500
+// 500 - Server Error
 app.use((err, req, res, next) => {
   console.error('🔥 Server Error:', err.message);
   console.error('📋 Error stack:', err.stack);
   
-  res.status(500).render('pages/500', { 
+  // Template data dengan semua required variables
+  const templateData = { 
     title: '500 - Server Error',
-    headContent: '',
     error: process.env.NODE_ENV === 'development' ? err : null,
     env: process.env.NODE_ENV || 'production'
-  });
+  };
+  
+  res.status(500).render('pages/500', templateData);
 });
+
+// ==================== PROCESS HANDLING ====================
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
@@ -305,22 +355,20 @@ process.on('unhandledRejection', (reason, promise) => {
   console.error('💥 Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
-// Export untuk Vercel (Serverless Function)
-// Vercel expects a function export for serverless functions
+// ==================== EXPORT & START SERVER ====================
+
+// Export untuk Vercel Serverless Functions
 const vercelHandler = (req, res) => {
-  // Attach io to request for use in routes
-  req.io = io;
   return app(req, res);
 };
 
-// For Vercel serverless functions
 module.exports = vercelHandler;
 
-// Start server untuk development (local only)
+// Start server untuk development (hanya jika dijalankan langsung)
 if (require.main === module) {
   const PORT = process.env.PORT || 3000;
   
-  // Additional check for MongoDB connection
+  // Check database connection
   const checkDatabase = setInterval(() => {
     if (mongoose.connection.readyState === 1) {
       console.log('✅ Database connection verified');
@@ -332,21 +380,18 @@ if (require.main === module) {
     console.log('='.repeat(50));
     console.log(`🚀 Source Code Hub Server Started`);
     console.log(`🌐 Local: http://localhost:${PORT}`);
-    console.log(`🌐 Network: http://${require('ip').address()}:${PORT}`);
     console.log(`📊 MongoDB: ${mongoose.connection.readyState === 1 ? 'Connected ✅' : 'Disconnected ❌'}`);
     console.log(`⚡ Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`📡 Socket.IO: ws://localhost:${PORT}`);
     console.log('='.repeat(50));
     
-    // Log available routes
     console.log('\n📡 Available Routes:');
     console.log('  GET  /                    - Home page');
     console.log('  GET  /legends             - Legends page');
     console.log('  GET  /project/:id         - Project detail');
     console.log('  GET  /admin/login         - Admin login');
-    console.log('  GET  /admin/dashboard     - Admin dashboard');
     console.log('  GET  /api/health          - Health check');
     console.log('  GET  /api/db-status       - Database status');
-    console.log('\n🔧 Socket.IO: ws://localhost:3000');
   });
   
   // Graceful shutdown
