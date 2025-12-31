@@ -24,7 +24,8 @@
     "morgan": "^1.10.0",
     "cors": "^2.8.5",
     "express-rate-limit": "^6.10.0",
-    "mongoose-paginate-v2": "^1.7.2"
+    "mongoose-paginate-v2": "^1.7.2",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
